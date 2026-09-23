@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skylandle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>⚡ Skylandle</h1>
+      <p>Guess the Skylander!</p>
+    </header>
+
+    <div class="game-info">
+      <button id="newGameBtn">New Game</button>
+      <p id="message"></p>
+    </div>
+
+    <div class="guess-area">
+      <input
+        type="text"
+        id="guessInput"
+        placeholder="Enter a Skylander..."
+        autocomplete="off"
+      >
+
+      <button id="guessBtn">Guess</button>
+
+      <div id="suggestions"></div>
+    </div>
+
+    <div class="legend">
+      <div>
+        <span class="legend-box green"></span>
+        Exact
+      </div>
+
+      <div>
+        <span class="legend-box yellow"></span>
+        Related / Close
+      </div>
+
+      <div>
+        <span class="legend-box gray"></span>
+        Wrong
+      </div>
+
+      <div>
+        <span>↑</span>
+        Guess is lower
+      </div>
+
+      <div>
+        <span>↓</span>
+        Guess is higher
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Skylander</th>
+            <th>Element</th>
+            <th>Game</th>
+            <th>Series</th>
+            <th>Color</th>
+            <th>Health</th>
+            <th>Speed</th>
+            <th>Armor</th>
+          </tr>
+        </thead>
+
+        <tbody id="guessTable">
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div id="winMessage" class="win-message hidden">
+      <h2>🎉 You got it!</h2>
+      <p id="answerText"></p>
+      <button id="playAgainBtn">Play Again</button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
