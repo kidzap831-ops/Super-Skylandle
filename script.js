@@ -33,7 +33,7 @@ const data = [
     name: "Dino-Rang",
     element: "Earth",
     game: "Spyro's Adventure",
-    attackForm: "Ranged",
+    attackForm: "Thrower",
     color: "Green",
     health: 300,
     speed: 43,
@@ -296,10 +296,151 @@ const data = [
     game: "Giants",
     attackForm: "Thrower",
     color: "Blue",
-    health: 260,
-    speed: 60,
-    armor: 15
+    health: 270,
+    speed: 43,
+    armor: 18
   },
+  {
+    name: "Crusher",
+    element: "Earth",
+    game: "Giants",
+    attackForm: "Heavy Melee",
+    color: "Grey",
+    health: 470,
+    speed: 20,
+    armor: 24
+  },
+  {
+    name: "Flashwing",
+    element: "Earth",
+    game: "Giants",
+    attackForm: "Heavy Melee",
+    color: "Purple",
+    health: 260,
+    speed: 43,
+    armor: 24
+  },
+  {
+    name: "Bouncer",
+    element: "Tech",
+    game: "Giants",
+    attackForm: "Ranged",
+    color: "Orange",
+    health: 430,
+    speed: 60,
+    armor: 24
+  },
+  {
+    name: "Sprocket",
+    element: "Tech",
+    game: "Giants",
+    attackForm: "Light Melee",
+    color: "Yellow",
+    health: 240,
+    speed: 43,
+    armor: 30
+  },
+  {
+    name: "Eye-Brawl",
+    element: "Undead",
+    game: "Giants",
+    attackForm: "Heavy Melee",
+    color: "Black",
+    health: 430,
+    speed: 20,
+    armor: 30
+  },
+  {
+    name: "Fright Rider",
+    element: "Undead",
+    game: "Giants",
+    attackForm: "Light Melee",
+    color: "White",
+    health: 270,
+    speed: 43,
+    armor: 12
+  },
+ {
+    name: "Shroomboom",
+    element: "Life",
+    game: "Giants",
+    attackForm: "Ranged",
+    color: "Yellow",
+    health: 260,
+    speed: 43,
+    armor: 18
+  },
+ {
+    name: "Hot Head",
+    element: "Fire",
+    game: "Giants",
+    attackForm: "Beam",
+    color: "Red",
+    health: 430,
+    speed: 20,
+    armor: 12
+  },
+ {
+    name: "Hot Dog",
+    element: "Fire",
+    game: "Giants",
+    attackForm: "Ranged",
+    color: "Red",
+    health: 250,
+    speed: 43,
+    armor: 6
+  },
+ {
+    name: "Ninjini",
+    element: "Magic",
+    game: "Giants",
+    attackForm: "Light Melee",
+    color: "Purple",
+    health: 410,
+    speed: 60,
+    armor: 48
+  },
+ {
+    name: "Swarm",
+    element: "Air",
+    game: "Giants",
+    attackForm: "Light Melee",
+    color: "Yellow",
+    health: 400,
+    speed: 20,
+    armor: 12
+  },
+ {
+    name: "Jet-Vac",
+    element: "Air",
+    game: "Giants",
+    attackForm: "Ranged",
+    color: "Blue",
+    health: 240,
+    speed: 50,
+    armor: 12
+  },
+ {
+    name: "Thumpback",
+    element: "Water",
+    game: "Giants",
+    attackForm: "Heavy Melee",
+    color: "Blue",
+    health: 460,
+    speed: 20,
+    armor: 30
+  },
+ {
+    name: "Chill",
+    element: "Water",
+    game: "Giants",
+    attackForm: "Thrower",
+    color: "Blue",
+    health: 260,
+    speed: 43,
+    armor: 24
+  },
+  
   {
     name: "Wash Buckler",
     element: "Water",
@@ -326,9 +467,9 @@ const data = [
     game: "Giants",
     attackForm: "Heavy Melee",
     color: "Brown",
-    health: 500,
-    speed: 30,
-    armor: 50
+    health: 430,
+    speed: 20,
+    armor: 24
   },
   {
     name: "Kaos",
