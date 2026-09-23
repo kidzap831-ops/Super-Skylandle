@@ -11,66 +11,32 @@
 
   <div class="container">
 
-    <header>
-      <h1>⚡ Skylandle</h1>
-      <p>Guess the Skylander!</p>
-    </header>
+    <h1>Skylandle</h1>
+    <p class="subtitle">Guess the mystery Skylander!</p>
 
-    <div class="game-info">
-      <button id="newGameBtn">New Game</button>
-      <p id="message"></p>
-    </div>
-
-    <div class="guess-area">
+    <div class="game-controls">
       <input
         type="text"
         id="guessInput"
         placeholder="Enter a Skylander..."
         autocomplete="off"
       >
-
-      <button id="guessBtn">Guess</button>
-
-      <div id="suggestions"></div>
+      <button id="guessButton">Guess</button>
+      <button id="newGameButton">New Game</button>
     </div>
 
-    <div class="legend">
-      <div>
-        <span class="legend-box green"></span>
-        Exact
-      </div>
+    <div id="autocomplete" class="autocomplete"></div>
 
-      <div>
-        <span class="legend-box yellow"></span>
-        Related / Close
-      </div>
-
-      <div>
-        <span class="legend-box gray"></span>
-        Wrong
-      </div>
-
-      <div>
-        <span>↑</span>
-        Guess is lower
-      </div>
-
-      <div>
-        <span>↓</span>
-        Guess is higher
-      </div>
-    </div>
+    <div id="winMessage" class="win-message"></div>
 
     <div class="table-wrapper">
-
-      <table>
-
+      <table id="guessTable">
         <thead>
           <tr>
             <th>Skylander</th>
             <th>Element</th>
             <th>Game</th>
-            <th>Series</th>
+            <th>Attack Form</th>
             <th>Color</th>
             <th>Health</th>
             <th>Speed</th>
@@ -78,22 +44,39 @@
           </tr>
         </thead>
 
-        <tbody id="guessTable">
-        </tbody>
-
+        <tbody id="guessTableBody"></tbody>
       </table>
-
     </div>
 
-    <div id="winMessage" class="win-message hidden">
-      <h2>🎉 You got it!</h2>
-      <p id="answerText"></p>
-      <button id="playAgainBtn">Play Again</button>
+    <div class="legend">
+      <div>
+        <span class="legend-box green"></span>
+        Correct
+      </div>
+
+      <div>
+        <span class="legend-box yellow"></span>
+        Close / Related
+      </div>
+
+      <div>
+        <span class="legend-box gray"></span>
+        Incorrect
+      </div>
+
+      <div>
+        <span>↑</span>
+        Too low
+      </div>
+
+      <div>
+        <span>↓</span>
+        Too high
+      </div>
     </div>
 
   </div>
 
   <script src="script.js"></script>
-
 </body>
 </html>
