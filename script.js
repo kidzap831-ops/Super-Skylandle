@@ -43,7 +43,7 @@ const data = [
     name: "Prism Break",
     element: "Earth",
     game: "Spyro's Adventure",
-    attackForm: "Elemental",
+    attackForm: "Beam",
     color: "Grey",
     health: 290,
     speed: 35,
