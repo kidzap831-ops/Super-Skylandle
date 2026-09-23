@@ -333,7 +333,7 @@ const data = [
   {
     name: "Kaos",
     element: "Dark",
-    game: "Various",
+    game: "Villian",
     attackForm: "Sorcery",
     color: "Dark",
     health: 450,
