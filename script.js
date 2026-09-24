@@ -173,7 +173,7 @@ const data = [
     name: "Voodood",
     element: "Magic",
     game: "Spyro's Adventure",
-    attackForm: "Light Melee",
+    attackForm: "Sorcery",
     color: "Green",
     health: 290,
     speed: 35,
@@ -354,7 +354,7 @@ const data = [
     name: "Fright Rider",
     element: "Undead",
     game: "Giants",
-    attackForm: "Light Melee",
+    attackForm: "Sorcery",
     color: "White",
     health: 270,
     speed: 43,
@@ -447,9 +447,9 @@ const data = [
     game: "Swap Force",
     attackForm: "Light Melee",
     color: "Blue",
-    health: 380,
-    speed: 40,
-    armor: 40
+    health: 270,
+    speed: 43,
+    armor: 24
   },
   {
     name: "Blast Zone",
@@ -457,9 +457,9 @@ const data = [
     game: "Swap Force",
     attackForm: "Thrower",
     color: "Orange",
-    health: 350,
-    speed: 45,
-    armor: 35
+    health: 290,
+    speed: 43,
+    armor: 24
   },
   {
     name: "Tree Rex",
