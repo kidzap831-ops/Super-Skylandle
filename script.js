@@ -462,6 +462,117 @@ const data = [
     armor: 24
   },
   {
+    name: "Rubble Rouser",
+    element: "Earth",
+    game: "Swap Force",
+    attackForm: "Heavy Melee",
+    color: "Grey",
+    health: 280,
+    speed: 35,
+    armor: 24
+  },
+  {
+    name: "Scorp",
+    element: "Earth",
+    game: "Swap Force",
+    attackForm: "Thrower",
+    color: "Brown",
+    health: 260 ,
+    speed: 35,
+    armor: 18
+  },
+  {
+    name: "Magna Charge",
+    element: "Tech",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Red",
+    health: 280 ,
+    speed: 50,
+    armor: 18
+  },
+  {
+    name: "Rattle Shake",
+    element: "Undead",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Yellow",
+    health: 280 ,
+    speed: 43,
+    armor: 12
+  },
+  {
+    name: "Hoot Loop",
+    element: "Magic",
+    game: "Swap Force",
+    attackForm: "Sorcery",
+    color: "Yellow",
+    health: 250 ,
+    speed: 43,
+    armor: 12
+  },
+  {
+    name: "Fire Kraken",
+    element: "Fire",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Red",
+    health: 260 ,
+    speed: 43,
+    armor: 18
+  },
+  {
+    name: "Pop Thorn",
+    element: "Air",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Red",
+    health: 280 ,
+    speed: 43,
+    armor: 24
+  },
+  {
+    name: "Bumble Blast",
+    element: "Life",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Brown",
+    health: 280 ,
+    speed: 43,
+    armor: 24
+  },
+  {
+    name: "Countdown",
+    element: "Tech",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Blue",
+    health: 290 ,
+    speed: 43,
+    armor: 12
+  },
+  {
+    name: "Dune Bug",
+    element: "Magic",
+    game: "Swap Force",
+    attackForm: "Sorcery",
+    color: "Blue",
+    health: 260 ,
+    speed: 25,
+    armor: 24
+  },
+  {
+    name: "Fryno",
+    element: "Fire",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Black",
+    health: 300 ,
+    speed: 43,
+    armor: 6
+  },
+  
+  {
     name: "Tree Rex",
     element: "Life",
     game: "Giants",
