@@ -741,6 +741,26 @@ const data = [
     speed: 43,
     armor: 12
   },
+ {
+    name: "Wind-Up",
+    element: "Tech",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Grey",
+    health: 270 ,
+    speed: 43,
+    armor: 30
+  },
+ {
+    name: "Zoo Lou",
+    element: "Life",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "White",
+    health: 280 ,
+    speed: 35,
+    armor: 24
+  },
   
   {
     name: "Tree Rex",
