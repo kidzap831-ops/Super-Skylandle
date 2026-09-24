@@ -539,7 +539,7 @@ const data = [
     color: "Brown",
     health: 280 ,
     speed: 43,
-    armor: 24
+    armor: 18
   },
   {
     name: "Countdown",
@@ -570,6 +570,176 @@ const data = [
     health: 300 ,
     speed: 43,
     armor: 6
+  },
+  {
+    name: "Punk Shock",
+    element: "Water",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Blue",
+    health: 270 ,
+    speed: 43,
+    armor: 12
+  },
+  {
+    name: "Smolderdash",
+    element: "Fire",
+    game: "Swap Force",
+    attackForm: "Beam",
+    color: "Black",
+    health: 280 ,
+    speed: 43,
+    armor: 12
+  },
+ {
+    name: "Free Ranger",
+    element: "Air",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Yellow",
+    health: 280 ,
+    speed: 43,
+    armor: 18
+  },
+ {
+    name: "Freeze Blade",
+    element: "Water",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Blue",
+    health: 280 ,
+    speed: 50,
+    armor: 9
+  },
+ {
+    name: "Night Shift",
+    element: "Undead",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Blue",
+    health: 200 ,
+    speed: 38,
+    armor: 4
+  },
+ {
+    name: "Stink Bomb",
+    element: "Life",
+    game: "Swap Force",
+    attackForm: "Thrower",
+    color: "Green",
+    health: 270 ,
+    speed: 43,
+    armor: 12
+  },
+ {
+    name: "Spy Rise",
+    element: "Tech",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Purple",
+    health: 270 ,
+    speed: 43,
+    armor: 18
+  },
+ {
+    name: "Boom Jet",
+    element: "Air",
+    game: "Swap Force",
+    attackForm: "Ranged",
+    color: "Blue",
+    health: 260 ,
+    speed: 43,
+    armor: 24
+  },
+ {
+    name: "Grilla Drilla",
+    element: "Life",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Yellow",
+    health: 290 ,
+    speed: 43,
+    armor: 24
+  },
+ {
+    name: "Trap Shadow",
+    element: "Magic",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Purple",
+    health: 270 ,
+    speed: 43,
+    armor: 12
+  },
+ {
+    name: "Doom Stone",
+    element: "Earth",
+    game: "Swap Force",
+    attackForm: "Heavy Melee",
+    color: "Grey",
+    health: 280 ,
+    speed: 35,
+    armor: 30
+  },
+ {
+    name: "Grim Creeper",
+    element: "Undead",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Blue",
+    health: 280 ,
+    speed: 43,
+    armor: 18
+  },
+ {
+    name: "Rip Tide",
+    element: "Water",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Blue",
+    health: 300 ,
+    speed: 43,
+    armor: 30
+  },
+ {
+    name: "Roller Brawl",
+    element: "Undead",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Pink",
+    health: 250 ,
+    speed: 50,
+    armor: 6
+  },
+ {
+    name: "Scratch",
+    element: "Air",
+    game: "Swap Force",
+    attackForm: "Light Melee",
+    color: "Pink",
+    health: 270 ,
+    speed: 50,
+    armor: 6
+  },
+ {
+    name: "Slobber Tooth",
+    element: "Earth",
+    game: "Swap Force",
+    attackForm: "Heavy Melee",
+    color: "Green",
+    health: 310 ,
+    speed: 35,
+    armor: 30
+  },
+ {
+    name: "Star Strike",
+    element: "Megic",
+    game: "Swap Force",
+    attackForm: "Sorcery",
+    color: "Blue",
+    health: 250 ,
+    speed: 43,
+    armor: 12
   },
   
   {
