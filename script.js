@@ -526,7 +526,7 @@ const data = [
     element: "Air",
     game: "Swap Force",
     attackForm: "Ranged",
-    color: "Red",
+    color: "Blue",
     health: 280 ,
     speed: 43,
     armor: 24
