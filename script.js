@@ -812,16 +812,378 @@ const data = [
     speed: 50,
     armor: 24
   },
-  {
-    name: "Spotlight",
-    element: "Light",
-    game: "Trap Team",
-    attackForm: "Beam",
-    color: "White",
-    health: 300,
-    speed: 55,
-    armor: 25
-  }
+
+
+  
+{
+  name: "Bushwhack",
+  element: "Life",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Brown",
+  health: 290,
+  speed: 60,
+  armor: 18
+},
+{
+  name: "Tuff Luck",
+  element: "Life",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Green",
+  health: 310,
+  speed: 85,
+  armor: 48
+},
+{
+  name: "Food Fight",
+  element: "Life",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Green",
+  health: 260,
+  speed: 60,
+  armor: 18
+},
+{
+  name: "High Five",
+  element: "Life",
+  game: "Trap Team",
+  attackForm: "Melee",
+  color: "Green",
+  health: 270,
+  speed: 60,
+  armor: 6
+},
+
+{
+  name: "Blastermind",
+  element: "Magic",
+  game: "Trap Team",
+  attackForm: "Sorcery",
+  color: "Purple",
+  health: 240,
+  speed: 70,
+  armor: 30
+},
+{
+  name: "Enigma",
+  element: "Magic",
+  game: "Trap Team",
+  attackForm: "Sorcery",
+  color: "Purple",
+  health: 310,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Cobra Cadabra",
+  element: "Magic",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Black",
+  health: 290,
+  speed: 70,
+  armor: 36
+},
+{
+  name: "Deja Vu",
+  element: "Magic",
+  game: "Trap Team",
+  attackForm: "Sorcery",
+  color: "Blue",
+  health: 210,
+  speed: 60,
+  armor: 18
+},
+
+{
+  name: "Gusto",
+  element: "Air",
+  game: "Trap Team",
+  attackForm: "Thrower",
+  color: "Blue",
+  health: 400,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Thunderbolt",
+  element: "Air",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Grey",
+  health: 410,
+  speed: 60,
+  armor: 48
+},
+{
+  name: "Blades",
+  element: "Air",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Blue",
+  health: 280,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Fling Kong",
+  element: "Air",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "White",
+  health: 240,
+  speed: 70,
+  armor: 12
+},
+
+{
+  name: "Lob-Star",
+  element: "Water",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Blue",
+  health: 240,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Snap Shot",
+  element: "Water",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Blue",
+  health: 290,
+  speed: 70,
+  armor: 24
+},
+{
+  name: "Echo",
+  element: "Water",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Blue",
+  health: 270,
+  speed: 50,
+  armor: 42
+},
+{
+  name: "Flip Wreck",
+  element: "Water",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Blue",
+  health: 300,
+  speed: 60,
+  armor: 30
+},
+
+{
+  name: "Gearshift",
+  element: "Tech",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "White",
+  health: 300,
+  speed: 70,
+  armor: 24
+},
+{
+  name: "Jawbreaker",
+  element: "Tech",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Yellow",
+  health: 340,
+  speed: 50,
+  armor: 12
+},
+{
+  name: "Chopper",
+  element: "Tech",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Orange",
+  health: 260,
+  speed: 60,
+  armor: 6
+},
+{
+  name: "Tread Head",
+  element: "Tech",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Red",
+  health: 270,
+  speed: 85,
+  armor: 18
+},
+
+{
+  name: "Wildfire",
+  element: "Fire",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Yellow",
+  health: 330,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Ka-Boom",
+  element: "Fire",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Red",
+  health: 250,
+  speed: 60,
+  armor: 12
+},
+{
+  name: "Torch",
+  element: "Fire",
+  game: "Trap Team",
+  attackForm: "Ranged",
+  color: "Red",
+  health: 230,
+  speed: 60,
+  armor: 12
+},
+{
+  name: "Trail Blazer",
+  element: "Fire",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "Red",
+  health: 270,
+  speed: 85,
+  armor: 18
+},
+
+{
+  name: "Head Rush",
+  element: "Earth",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Brown",
+  health: 340,
+  speed: 60,
+  armor: 48
+},
+{
+  name: "Wallop",
+  element: "Earth",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Brown",
+  health: 300,
+  speed: 60,
+  armor: 18
+},
+{
+  name: "Fist Bump",
+  element: "Earth",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Black",
+  health: 280,
+  speed: 60,
+  armor: 30
+},
+{
+  name: "Rocky Roll",
+  element: "Earth",
+  game: "Trap Team",
+  attackForm: "Thrower",
+  color: "Black",
+  health: 270,
+  speed: 60,
+  armor: 30
+},
+
+{
+  name: "Krypt King",
+  element: "Undead",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Black",
+  health: 300,
+  speed: 60,
+  armor: 24
+},
+{
+  name: "Short Cut",
+  element: "Undead",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Brown",
+  health: 280,
+  speed: 70,
+  armor: 18
+},
+{
+  name: "Bat Spin",
+  element: "Undead",
+  game: "Trap Team",
+  attackForm: "Sorcery",
+  color: "Red",
+  health: 240,
+  speed: 85,
+  armor: 12
+},
+{
+  name: "Funny Bone",
+  element: "Undead",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "White",
+  health: 270,
+  speed: 70,
+  armor: 24
+},
+
+{
+  name: "Knight Light",
+  element: "Light",
+  game: "Trap Team",
+  attackForm: "Light Melee",
+  color: "White",
+  health: 430,
+  speed: 70,
+  armor: 12
+},
+{
+  name: "Spotlight",
+  element: "Light",
+  game: "Trap Team",
+  attackForm: "Beam",
+  color: "White",
+  health: 270,
+  speed: 60,
+  armor: 36
+},
+
+{
+  name: "Knight Mare",
+  element: "Dark",
+  game: "Trap Team",
+  attackForm: "Heavy Melee",
+  color: "Black",
+  health: 350,
+  speed: 85,
+  armor: 36
+},
+{
+  name: "Blackout",
+  element: "Dark",
+  game: "Trap Team",
+  attackForm: "Sorcery",
+  color: "Black",
+  health: 260,
+  speed: 60,
+  armor: 24
+},
 ];
 
 
