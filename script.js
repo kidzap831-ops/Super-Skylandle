@@ -314,7 +314,7 @@ const data = [
     name: "Flashwing",
     element: "Earth",
     game: "Giants",
-    attackForm: "Heavy Melee",
+    attackForm: "Ranged",
     color: "Purple",
     health: 260,
     speed: 43,
