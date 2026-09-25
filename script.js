@@ -1530,14 +1530,18 @@ const levelGames = {
   1: ["Spyro's Adventure"],
   2: ["Spyro's Adventure", "Giants"],
   3: ["Spyro's Adventure", "Giants", "Swap Force"],
-  4: ["Spyro's Adventure", "Giants", "Swap Force", "Trap Team"]
+  4: ["Spyro's Adventure", "Giants", "Swap Force", "Trap Team"],
+  5: ["Spyro's Adventure", "Giants", "Swap Force", "Trap Team", "SuperChargers"],
+  6: ["Spyro's Adventure", "Giants", "Swap Force", "Trap Team", "SuperChargers", "Imaginators"]
 };
 
 const levelMultipliers = {
   1: 1,
   2: 1.10,
   3: 1.4,
-  4: 2.0
+  4: 2.0,
+  5: 3.0,
+  6: 5.0
 };
 
 function getLevelPool() {
