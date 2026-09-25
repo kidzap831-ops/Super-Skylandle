@@ -733,7 +733,7 @@ armor: 30
 },
 {
 name: "Star Strike",
-element: "Megic",
+element: "Magic",
 game: "Swap Force",
 attackForm: "Sorcery",
 color: "Blue",
