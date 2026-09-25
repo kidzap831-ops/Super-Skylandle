@@ -1182,6 +1182,127 @@ health: 260,
 speed: 60,
 armor: 24
 },
+{
+name: "Spitfire",
+element: "Fire",
+game: "SuperChargers",
+attackForm: "Light Melee",
+color: "Blue",
+health: 200,
+speed: 50,
+armor: 18
+},
+{
+name: "Stormblade",
+element: "Air",
+game: "SuperChargers",
+attackForm: "Ranged",
+color: "Blue",
+health: 220,
+speed: 50,
+armor: 6
+},
+{
+name: "Dive-Clops",
+element: "Water",
+game: "SuperChargers",
+attackForm: "Ranged",
+color: "Blue",
+health: 250,
+speed: 35,
+armor: 30
+},
+{
+name: "High Volt",
+element: "Tech",
+game: "SuperChargers",
+attackForm: "Light Melee",
+color: "Blue",
+health: 260,
+speed: 50,
+armor: 24
+},
+{
+name: "Fiesta",
+element: "Undead",
+game: "SuperChargers",
+attackForm: "Beam",
+color: "Black",
+health: 230,
+speed: 50,
+armor: 6
+},
+{
+name: "Splat",
+element: "Magic",
+game: "SuperChargers",
+attackForm: "Sorcery",
+color: "Pink",
+health: 240,
+speed: 43,
+armor: 6
+},
+{
+name: "Thrillipede",
+element: "Life",
+game: "SuperChargers",
+attackForm: "Thrower",
+color: "Green",
+health: 250,
+speed: 50,
+armor: 12
+},
+{
+name: "Smash Hit",
+element: "Earth",
+game: "SuperChargers",
+attackForm: "Heavy Melee",
+color: "Grey",
+health: 350,
+speed: 35,
+armor: 24
+},
+{
+name: "Astroblast",
+element: "Light",
+game: "SuperChargers",
+attackForm: "Ranged",
+color: "White",
+health: 180,
+speed: 35,
+armor: 18
+},
+{
+name: "Nightfall",
+element: "Dark",
+game: "SuperChargers",
+attackForm: "Light Melee",
+color: "Black",
+health: 230,
+speed: 43,
+armor: 6
+},
+{
+name: "Turbo Charge Donkey Kong",
+element: "Life",
+game: "SuperChargers",
+attackForm: "Heavy Melee",
+color: "Brown",
+health: 370,
+speed: 50,
+armor: 12
+},
+{
+name: "Hammer Slam Bowser",
+element: "Fire",
+game: "SuperChargers",
+attackForm: "Heavy Melee",
+color: "Yellow",
+health: 280,
+speed: 35,
+armor: 30
+},
+  
 ];
 
 /* =========================
