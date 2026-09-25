@@ -1185,20 +1185,34 @@ armor: 24
 ];
 
 /* =========================
+SUPABASE
+========================= */
+
+const SUPABASE_URL = "https://sixsymvcrypthmtajtfz.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_a44g8B8IN0QstRBO5B3Xpg_Furb5-gy";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentUser = null;
+
+/* =========================
 ELEMENT RELATIONSHIPS
 ========================= */
 
 const relatedElements = {
-Fire: ["Water", "Air"],
-Water: ["Fire", "Life"],
-Life: ["Undead", "Water", "Light"],
-Undead: ["Life", "Magic", "Dark"],
-Magic: ["Tech", "Undead"],
-Tech: ["Magic", "Earth"],
-Earth: ["Air", "Tech"],
-Air: ["Earth", "Fire"],
-Light: ["Life", "Dark"],
-Dark: ["Light", "Undead"]
+  Fire: ["Water", "Air"],
+  Water: ["Fire", "Life"],
+  Life: ["Undead", "Water", "Light"],
+  Undead: ["Life", "Magic", "Dark"],
+  Magic: ["Tech", "Undead"],
+  Tech: ["Magic", "Earth"],
+  Earth: ["Air", "Tech"],
+  Air: ["Earth", "Fire"],
+  Light: ["Life", "Dark"],
+  Dark: ["Light", "Undead"]
 };
 
 /* =========================
@@ -1209,6 +1223,181 @@ let correctSkylander;
 let guessCount = 0;
 let totalScore = 0;
 let gameOver = false;
+
+/* =========================
+ACCOUNT HELPERS
+========================= */
+
+const usernameInput = document.getElementById("usernameInput");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const signUpButton = document.getElementById("signUpButton");
+const loginButton = document.getElementById("loginButton");
+const logoutButton = document.getElementById("logoutButton");
+const loggedOutView = document.getElementById("loggedOutView");
+const loggedInView = document.getElementById("loggedInView");
+const accountUsername = document.getElementById("accountUsername");
+const authMessage = document.getElementById("authMessage");
+
+function setAuthMessage(message, isError = false) {
+  authMessage.textContent = message;
+  authMessage.classList.toggle("error", isError);
+}
+
+function setAccountLoading(isLoading) {
+  signUpButton.disabled = isLoading;
+  loginButton.disabled = isLoading;
+  logoutButton.disabled = isLoading;
+}
+
+async function loadProfile() {
+  if (!currentUser) return;
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("username, score, total_score")
+    .eq("id", currentUser.id)
+    .single();
+
+  if (error) {
+    console.error("Could not load profile:", error);
+    setAuthMessage("Logged in, but your profile could not be loaded.", true);
+    return;
+  }
+
+  totalScore = Number(profile.total_score) || 0;
+  accountUsername.textContent =
+    profile.username || currentUser.email || "Player";
+
+  updateScore();
+}
+
+async function refreshAccount(session) {
+  currentUser = session?.user ?? null;
+
+  if (currentUser) {
+    loggedOutView.classList.add("hidden");
+    loggedInView.classList.remove("hidden");
+    await loadProfile();
+  } else {
+    loggedOutView.classList.remove("hidden");
+    loggedInView.classList.add("hidden");
+    accountUsername.textContent = "Player";
+    totalScore = 0;
+    updateScore();
+  }
+}
+
+async function signUp() {
+  const username = usernameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!username || !email || !password) {
+    setAuthMessage("Enter a username, email and password.", true);
+    return;
+  }
+
+  if (password.length < 8) {
+    setAuthMessage("Your password must be at least 8 characters.", true);
+    return;
+  }
+
+  setAccountLoading(true);
+  setAuthMessage("Creating account...");
+
+  const { data: signUpData, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { username }
+    }
+  });
+
+  setAccountLoading(false);
+
+  if (error) {
+    setAuthMessage(error.message, true);
+    return;
+  }
+
+  passwordInput.value = "";
+
+  if (signUpData.session) {
+    setAuthMessage("Account created! You are logged in.");
+  } else {
+    setAuthMessage("Account created! Check your email to confirm it, then log in.");
+  }
+}
+
+async function logIn() {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    setAuthMessage("Enter your email and password.", true);
+    return;
+  }
+
+  setAccountLoading(true);
+  setAuthMessage("Logging in...");
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  setAccountLoading(false);
+
+  if (error) {
+    setAuthMessage(error.message, true);
+    return;
+  }
+
+  passwordInput.value = "";
+  setAuthMessage("Logged in!");
+}
+
+async function logOut() {
+  setAccountLoading(true);
+  const { error } = await supabaseClient.auth.signOut();
+  setAccountLoading(false);
+
+  if (error) {
+    setAuthMessage(error.message, true);
+    return;
+  }
+
+  setAuthMessage("Logged out.");
+}
+
+async function saveScore(score) {
+  if (!currentUser) return;
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .update({
+      score: score,
+      total_score: totalScore
+    })
+    .eq("id", currentUser.id);
+
+  if (error) {
+    console.error("Could not save score:", error);
+    setAuthMessage("Your game finished, but the score could not be saved.", true);
+  } else {
+    setAuthMessage("Score saved!");
+  }
+}
+
+signUpButton.addEventListener("click", signUp);
+loginButton.addEventListener("click", logIn);
+logoutButton.addEventListener("click", logOut);
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  // Delay database work until the auth callback has finished.
+  setTimeout(() => refreshAccount(session), 0);
+});
 
 /* =========================
 SCORING
@@ -1229,13 +1418,8 @@ function getScore(guesses) {
 
 function updateScore() {
   document.getElementById("guessCount").textContent = guessCount;
-
-  if (guessCount === 0) {
-    document.getElementById("score").textContent = 100;
-  } else {
-    document.getElementById("score").textContent = getScore(guessCount);
-  }
-
+  document.getElementById("score").textContent =
+    guessCount === 0 ? 100 : getScore(guessCount);
   document.getElementById("totalScore").textContent = totalScore;
 }
 
@@ -1244,9 +1428,7 @@ START GAME
 ========================= */
 
 function startGame() {
-  correctSkylander =
-    data[Math.floor(Math.random() * data.length)];
-
+  correctSkylander = data[Math.floor(Math.random() * data.length)];
   guessCount = 0;
   gameOver = false;
 
@@ -1254,7 +1436,6 @@ function startGame() {
   document.getElementById("winMessage").textContent = "";
   document.getElementById("guessInput").value = "";
   document.getElementById("autocomplete").innerHTML = "";
-
   document.getElementById("guessInput").disabled = false;
   document.getElementById("guessButton").disabled = false;
 
@@ -1262,51 +1443,28 @@ function startGame() {
 }
 
 /* =========================
-CATEGORY CELLS
+CELLS
 ========================= */
 
 function categoryCell(guess, correct) {
-  if (guess === correct) {
-    return `<div class="cell green">${guess}</div>`;
-  }
-
-  return `<div class="cell gray">${guess}</div>`;
+  return `<div class="cell ${guess === correct ? "green" : "gray"}">${guess}</div>`;
 }
-
-/* =========================
-ELEMENT CELL
-========================= */
 
 function elementCell(guess, correct) {
   if (guess === correct) {
     return `<div class="cell green">${guess}</div>`;
   }
 
-  if (
-    relatedElements[correct] &&
-    relatedElements[correct].includes(guess)
-  ) {
+  if (relatedElements[correct] && relatedElements[correct].includes(guess)) {
     return `<div class="cell yellow">${guess}</div>`;
   }
 
   return `<div class="cell gray">${guess}</div>`;
 }
 
-/* =========================
-ATTACK FORM CELL
-========================= */
-
 function attackFormCell(guess, correct) {
-  if (guess === correct) {
-    return `<div class="cell green">${guess}</div>`;
-  }
-
-  return `<div class="cell gray">${guess}</div>`;
+  return categoryCell(guess, correct);
 }
-
-/* =========================
-STAT CELL
-========================= */
 
 function statCell(guess, correct) {
   if (guess === correct) {
@@ -1314,20 +1472,12 @@ function statCell(guess, correct) {
   }
 
   const difference = Math.abs(guess - correct) / correct;
-
   let arrow = "";
 
-  if (guess < correct) {
-    arrow = " ↑";
-  } else if (guess > correct) {
-    arrow = " ↓";
-  }
+  if (guess < correct) arrow = " ↑";
+  if (guess > correct) arrow = " ↓";
 
-  if (difference <= 0.15) {
-    return `<div class="cell yellow">${guess}${arrow}</div>`;
-  }
-
-  return `<div class="cell gray">${guess}${arrow}</div>`;
+  return `<div class="cell ${difference <= 0.15 ? "yellow" : "gray"}">${guess}${arrow}</div>`;
 }
 
 /* =========================
@@ -1335,35 +1485,22 @@ MAKE GUESS
 ========================= */
 
 function makeGuess() {
+  if (gameOver) return;
 
-  /* STOP ALL GUESSES AFTER WINNING */
-  if (gameOver) {
-    return;
-  }
+  const input = document.getElementById("guessInput");
+  const guessName = input.value.trim();
 
-  const input =
-    document.getElementById("guessInput");
-
-  const guessName =
-    input.value.trim();
-
-  const guess =
-    data.find(
-      skylander =>
-        skylander.name.toLowerCase() ===
-        guessName.toLowerCase()
-    );
+  const guess = data.find(
+    skylander => skylander.name.toLowerCase() === guessName.toLowerCase()
+  );
 
   if (!guess) {
     alert("Skylander not found!");
     return;
   }
 
-  /* COUNT VALID GUESSES */
   guessCount++;
-
   updateScore();
-
   addGuessRow(guess);
 
   input.value = "";
@@ -1374,87 +1511,30 @@ function makeGuess() {
   }
 }
 
-/* =========================
-ADD GUESS ROW
-========================= */
-
 function addGuessRow(guess) {
-  const tableBody =
-    document.getElementById("guessTableBody");
-
-  const row =
-    document.createElement("tr");
+  const row = document.createElement("tr");
 
   row.innerHTML = `
-<td>
-${categoryCell(
-  guess.name,
-  correctSkylander.name
-)}
-</td>
+    <td>${categoryCell(guess.name, correctSkylander.name)}</td>
+    <td>${elementCell(guess.element, correctSkylander.element)}</td>
+    <td>${categoryCell(guess.game, correctSkylander.game)}</td>
+    <td>${attackFormCell(guess.attackForm, correctSkylander.attackForm)}</td>
+    <td>${categoryCell(guess.color, correctSkylander.color)}</td>
+    <td>${statCell(guess.health, correctSkylander.health)}</td>
+    <td>${statCell(guess.speed, correctSkylander.speed)}</td>
+    <td>${statCell(guess.armor, correctSkylander.armor)}</td>
+  `;
 
-<td>
-  ${elementCell(
-    guess.element,
-    correctSkylander.element
-  )}
-</td>
-
-<td>
-  ${categoryCell(
-    guess.game,
-    correctSkylander.game
-  )}
-</td>
-
-<td>
-  ${attackFormCell(
-    guess.attackForm,
-    correctSkylander.attackForm
-  )}
-</td>
-
-<td>
-  ${categoryCell(
-    guess.color,
-    correctSkylander.color
-  )}
-</td>
-
-<td>
-  ${statCell(
-    guess.health,
-    correctSkylander.health
-  )}
-</td>
-
-<td>
-  ${statCell(
-    guess.speed,
-    correctSkylander.speed
-  )}
-</td>
-
-<td>
-  ${statCell(
-    guess.armor,
-    correctSkylander.armor
-  )}
-</td>
-`;
-
-  tableBody.prepend(row);
+  document.getElementById("guessTableBody").prepend(row);
 }
 
 /* =========================
-WIN MESSAGE
+WIN
 ========================= */
 
-function showWin() {
+async function showWin() {
   const score = getScore(guessCount);
-
   totalScore += score;
-
   gameOver = true;
 
   document.getElementById("winMessage").textContent =
@@ -1465,59 +1545,36 @@ function showWin() {
   document.getElementById("autocomplete").innerHTML = "";
 
   updateScore();
+  await saveScore(score);
 }
 
 /* =========================
 AUTOCOMPLETE
 ========================= */
 
-const guessInput =
-  document.getElementById("guessInput");
-
-const autocomplete =
-  document.getElementById("autocomplete");
+const guessInput = document.getElementById("guessInput");
+const autocomplete = document.getElementById("autocomplete");
 
 guessInput.addEventListener("input", () => {
+  if (gameOver) return;
 
-  if (gameOver) {
-    return;
-  }
-
-  const value =
-    guessInput.value.toLowerCase().trim();
-
+  const value = guessInput.value.toLowerCase().trim();
   autocomplete.innerHTML = "";
 
-  if (!value) {
-    return;
-  }
+  if (!value) return;
 
-  const matches =
-    data.filter(skylander =>
-      skylander.name
-        .toLowerCase()
-        .includes(value)
-    );
+  const matches = data
+    .filter(skylander => skylander.name.toLowerCase().includes(value))
+    .slice(0, 12);
 
   matches.forEach(skylander => {
-
-    const item =
-      document.createElement("div");
-
-    item.className =
-      "autocomplete-item";
-
-    item.textContent =
-      skylander.name;
+    const item = document.createElement("div");
+    item.className = "autocomplete-item";
+    item.textContent = skylander.name;
 
     item.addEventListener("click", () => {
-      if (gameOver) {
-        return;
-      }
-
-      guessInput.value =
-        skylander.name;
-
+      if (gameOver) return;
+      guessInput.value = skylander.name;
       autocomplete.innerHTML = "";
     });
 
@@ -1526,31 +1583,28 @@ guessInput.addEventListener("input", () => {
 });
 
 /* =========================
-BUTTONS
+BUTTONS / START
 ========================= */
 
-document
-  .getElementById("guessButton")
-  .addEventListener("click", makeGuess);
-
-document
-  .getElementById("newGameButton")
-  .addEventListener("click", startGame);
-
-/* =========================
-ENTER KEY
-========================= */
+document.getElementById("guessButton").addEventListener("click", makeGuess);
+document.getElementById("newGameButton").addEventListener("click", startGame);
 
 guessInput.addEventListener("keydown", event => {
-
-  if (event.key === "Enter") {
-    makeGuess();
-  }
-
+  if (event.key === "Enter") makeGuess();
 });
 
-/* =========================
-START
-========================= */
+async function initialize() {
+  startGame();
 
-startGame();
+  const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Could not read session:", error);
+    setAuthMessage("Could not check login status.", true);
+    return;
+  }
+
+  await refreshAccount(session);
+}
+
+initialize();

@@ -6,94 +6,82 @@
   <title>Skylandle</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <main class="page">
+    <header class="hero">
+      <h1>SKYLANDLE</h1>
+      <p>Guess the mystery Skylander!</p>
+    </header>
 
-  <div class="container">
+    <section class="account-card">
+      <div id="loggedOutView">
+        <h2>Account</h2>
+        <p class="muted">Log in to save your total score between visits.</p>
 
-    <h1>Skylandle</h1>
-    <p class="subtitle">Guess the mystery Skylander!</p>
+        <div class="account-grid">
+          <input id="usernameInput" type="text" maxlength="24" placeholder="Username" autocomplete="username">
+          <input id="emailInput" type="email" placeholder="Email" autocomplete="email">
+          <input id="passwordInput" type="password" minlength="8" placeholder="Password (8+ characters)" autocomplete="current-password">
+        </div>
 
-    <div class="score-board">
-      <div class="score-box">
-        <span class="score-label">Score</span>
-        <span id="score">100</span>
+        <div class="account-buttons">
+          <button id="signUpButton" type="button">Create Account</button>
+          <button id="loginButton" type="button">Log In</button>
+        </div>
       </div>
 
-      <div class="score-box">
-        <span class="score-label">Guesses</span>
-        <span id="guessCount">0</span>
+      <div id="loggedInView" class="hidden">
+        <div class="logged-in-row">
+          <div>
+            <div class="muted">Logged in as</div>
+            <strong id="accountUsername">Player</strong>
+          </div>
+          <button id="logoutButton" type="button" class="secondary">Log Out</button>
+        </div>
       </div>
 
-      <div class="score-box">
-        <span class="score-label">Total Score</span>
-        <span id="totalScore">0</span>
-      </div>
-    </div>
+      <p id="authMessage" class="auth-message" aria-live="polite"></p>
+    </section>
 
-    <div class="game-controls">
-      <input
-        type="text"
-        id="guessInput"
-        placeholder="Enter a Skylander..."
-        autocomplete="off"
-      >
-      <button id="guessButton">Guess</button>
-      <button id="newGameButton">New Game</button>
-    </div>
+    <section class="scoreboard">
+      <div><span class="score-label">Current score</span><strong id="score">100</strong></div>
+      <div><span class="score-label">Guesses</span><strong id="guessCount">0</strong></div>
+      <div><span class="score-label">Total score</span><strong id="totalScore">0</strong></div>
+    </section>
 
-    <div id="autocomplete" class="autocomplete"></div>
-
-    <div id="winMessage" class="win-message"></div>
-
-    <div class="table-wrapper">
-      <table id="guessTable">
-        <thead>
-          <tr>
-            <th>Skylander</th>
-            <th>Element</th>
-            <th>Game</th>
-            <th>Attack Form</th>
-            <th>Color</th>
-            <th>Health</th>
-            <th>Speed</th>
-            <th>Armor</th>
-          </tr>
-        </thead>
-
-        <tbody id="guessTableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="legend">
-      <div>
-        <span class="legend-box green"></span>
-        Correct
+    <section class="game-card">
+      <div class="guess-area">
+        <div class="autocomplete-wrap">
+          <input id="guessInput" type="text" placeholder="Type a Skylander..." autocomplete="off">
+          <div id="autocomplete" class="autocomplete"></div>
+        </div>
+        <button id="guessButton" type="button">Guess</button>
+        <button id="newGameButton" type="button" class="secondary">New Game</button>
       </div>
 
-      <div>
-        <span class="legend-box yellow"></span>
-        Close / Related
+      <div id="winMessage" class="win-message" aria-live="polite"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Skylander</th>
+              <th>Element</th>
+              <th>Game</th>
+              <th>Attack Form</th>
+              <th>Color</th>
+              <th>Health</th>
+              <th>Speed</th>
+              <th>Armor</th>
+            </tr>
+          </thead>
+          <tbody id="guessTableBody"></tbody>
+        </table>
       </div>
+    </section>
+  </main>
 
-      <div>
-        <span class="legend-box gray"></span>
-        Incorrect
-      </div>
-
-      <div>
-        <span>↑</span>
-        Too low
-      </div>
-
-      <div>
-        <span>↓</span>
-        Too high
-      </div>
-    </div>
-
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
