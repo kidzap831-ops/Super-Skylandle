@@ -1403,7 +1403,7 @@ armor: 6
 name: "Turbo Charge Donkey Kong",
 element: "Life",
 game: "SuperChargers",
-gimmick: "SuperCharger",
+gimmick: "Guest",
 attackForm: "Heavy Melee",
 color: "Brown",
 health: 370,
@@ -1414,7 +1414,7 @@ armor: 12
 name: "Hammer Slam Bowser",
 element: "Fire",
 game: "SuperChargers",
-gimmick: "SuperCharger",
+gimmick: "Guest",
 attackForm: "Heavy Melee",
 color: "Yellow",
 health: 280,
@@ -1618,6 +1618,28 @@ color: "Blue",
 health: 290,
 speed: 15,
 armor: 6
+},
+  {
+  name: "Crash Bandicoot",
+  element: "Life",
+  game: "Imaginators",
+  gimmick: "Guest",
+  attackForm: "Light Melee",
+  color: "Orange",
+  health: 150,
+  speed: 15,
+  armor: 2
+},
+{
+  name: "Dr. Neo Cortex",
+  element: "Tech",
+  game: "Imaginators",
+  gimmick: "Guest",
+  attackForm: "Ranged",
+  color: "Yellow",
+  health: 260,
+  speed: 8,
+  armor: 4
 },
   
 ];
