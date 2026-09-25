@@ -259,6 +259,7 @@ health: 310,
 speed: 35,
 armor: 30
 },
+
 {
 name: "Trigger Happy",
 element: "Tech",
@@ -439,6 +440,7 @@ health: 260,
 speed: 43,
 armor: 24
 },
+
 {
 name: "Wash Buckler",
 element: "Water",
@@ -475,7 +477,7 @@ element: "Earth",
 game: "Swap Force",
 attackForm: "Thrower",
 color: "Brown",
-health: 260,
+health: 260 ,
 speed: 35,
 armor: 18
 },
@@ -485,7 +487,7 @@ element: "Tech",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Red",
-health: 280,
+health: 280 ,
 speed: 50,
 armor: 18
 },
@@ -495,7 +497,7 @@ element: "Undead",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Yellow",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 12
 },
@@ -505,7 +507,7 @@ element: "Magic",
 game: "Swap Force",
 attackForm: "Sorcery",
 color: "Yellow",
-health: 250,
+health: 250 ,
 speed: 43,
 armor: 12
 },
@@ -515,7 +517,7 @@ element: "Fire",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Red",
-health: 260,
+health: 260 ,
 speed: 43,
 armor: 18
 },
@@ -525,7 +527,7 @@ element: "Air",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Blue",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 24
 },
@@ -535,7 +537,7 @@ element: "Life",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Brown",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 18
 },
@@ -545,7 +547,7 @@ element: "Tech",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Blue",
-health: 290,
+health: 290 ,
 speed: 43,
 armor: 12
 },
@@ -555,7 +557,7 @@ element: "Magic",
 game: "Swap Force",
 attackForm: "Sorcery",
 color: "Blue",
-health: 260,
+health: 260 ,
 speed: 25,
 armor: 24
 },
@@ -565,7 +567,7 @@ element: "Fire",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Black",
-health: 300,
+health: 300 ,
 speed: 43,
 armor: 6
 },
@@ -575,7 +577,7 @@ element: "Water",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Blue",
-health: 270,
+health: 270 ,
 speed: 43,
 armor: 12
 },
@@ -585,7 +587,7 @@ element: "Fire",
 game: "Swap Force",
 attackForm: "Beam",
 color: "Black",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 12
 },
@@ -595,7 +597,7 @@ element: "Air",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Yellow",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 18
 },
@@ -605,7 +607,7 @@ element: "Water",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Blue",
-health: 280,
+health: 280 ,
 speed: 50,
 armor: 9
 },
@@ -615,7 +617,7 @@ element: "Undead",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Blue",
-health: 200,
+health: 200 ,
 speed: 38,
 armor: 4
 },
@@ -625,7 +627,7 @@ element: "Life",
 game: "Swap Force",
 attackForm: "Thrower",
 color: "Green",
-health: 270,
+health: 270 ,
 speed: 43,
 armor: 12
 },
@@ -635,7 +637,7 @@ element: "Tech",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Purple",
-health: 270,
+health: 270 ,
 speed: 43,
 armor: 18
 },
@@ -645,7 +647,7 @@ element: "Air",
 game: "Swap Force",
 attackForm: "Ranged",
 color: "Blue",
-health: 260,
+health: 260 ,
 speed: 43,
 armor: 24
 },
@@ -655,7 +657,7 @@ element: "Life",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Yellow",
-health: 290,
+health: 290 ,
 speed: 43,
 armor: 24
 },
@@ -665,7 +667,7 @@ element: "Magic",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Purple",
-health: 270,
+health: 270 ,
 speed: 43,
 armor: 12
 },
@@ -675,7 +677,7 @@ element: "Earth",
 game: "Swap Force",
 attackForm: "Heavy Melee",
 color: "Grey",
-health: 280,
+health: 280 ,
 speed: 35,
 armor: 30
 },
@@ -685,7 +687,7 @@ element: "Undead",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Blue",
-health: 280,
+health: 280 ,
 speed: 43,
 armor: 18
 },
@@ -695,7 +697,7 @@ element: "Water",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Blue",
-health: 300,
+health: 300 ,
 speed: 43,
 armor: 30
 },
@@ -705,7 +707,7 @@ element: "Undead",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Pink",
-health: 250,
+health: 250 ,
 speed: 50,
 armor: 6
 },
@@ -715,7 +717,7 @@ element: "Air",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Pink",
-health: 270,
+health: 270 ,
 speed: 50,
 armor: 6
 },
@@ -725,7 +727,7 @@ element: "Earth",
 game: "Swap Force",
 attackForm: "Heavy Melee",
 color: "Green",
-health: 310,
+health: 310 ,
 speed: 35,
 armor: 30
 },
@@ -735,7 +737,7 @@ element: "Megic",
 game: "Swap Force",
 attackForm: "Sorcery",
 color: "Blue",
-health: 250,
+health: 250 ,
 speed: 43,
 armor: 12
 },
@@ -745,7 +747,7 @@ element: "Tech",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "Grey",
-health: 270,
+health: 270 ,
 speed: 43,
 armor: 30
 },
@@ -755,10 +757,11 @@ element: "Life",
 game: "Swap Force",
 attackForm: "Light Melee",
 color: "White",
-health: 280,
+health: 280 ,
 speed: 35,
 armor: 24
 },
+
 {
 name: "Tree Rex",
 element: "Life",
@@ -809,6 +812,7 @@ health: 300,
 speed: 50,
 armor: 24
 },
+
 {
 name: "Bushwhack",
 element: "Life",
@@ -849,6 +853,7 @@ health: 270,
 speed: 60,
 armor: 6
 },
+
 {
 name: "Blastermind",
 element: "Magic",
@@ -889,6 +894,7 @@ health: 210,
 speed: 60,
 armor: 18
 },
+
 {
 name: "Gusto",
 element: "Air",
@@ -929,6 +935,7 @@ health: 240,
 speed: 70,
 armor: 12
 },
+
 {
 name: "Lob-Star",
 element: "Water",
@@ -969,6 +976,7 @@ health: 300,
 speed: 60,
 armor: 30
 },
+
 {
 name: "Gearshift",
 element: "Tech",
@@ -1009,6 +1017,7 @@ health: 270,
 speed: 85,
 armor: 18
 },
+
 {
 name: "Wildfire",
 element: "Fire",
@@ -1049,6 +1058,7 @@ health: 270,
 speed: 85,
 armor: 18
 },
+
 {
 name: "Head Rush",
 element: "Earth",
@@ -1089,6 +1099,7 @@ health: 270,
 speed: 60,
 armor: 30
 },
+
 {
 name: "Krypt King",
 element: "Undead",
@@ -1129,6 +1140,7 @@ health: 270,
 speed: 70,
 armor: 24
 },
+
 {
 name: "Knight Light",
 element: "Light",
@@ -1149,6 +1161,7 @@ health: 270,
 speed: 60,
 armor: 36
 },
+
 {
 name: "Knight Mare",
 element: "Dark",
@@ -1168,7 +1181,7 @@ color: "Black",
 health: 260,
 speed: 60,
 armor: 24
-}
+},
 ];
 
 /* =========================
@@ -1194,13 +1207,12 @@ GAME VARIABLES
 
 let correctSkylander;
 let guessCount = 0;
-let gameOver = false;
 
 /* =========================
 SCORING
 ========================= */
 
-function calculateScore(guesses) {
+function getScore(guesses) {
 if (guesses === 1) return 100;
 if (guesses === 2) return 50;
 if (guesses === 3) return 28;
@@ -1210,23 +1222,16 @@ if (guesses === 6) return 7;
 if (guesses === 7) return 5;
 if (guesses === 8) return 4;
 if (guesses === 9) return 3;
-
 return 2;
 }
 
-/* =========================
-UPDATE SCORE DISPLAY
-========================= */
-
-function updateScoreDisplay() {
+function updateScore() {
 document.getElementById("guessCount").textContent = guessCount;
 
-if (gameOver) {
-document.getElementById("score").textContent =
-calculateScore(guessCount);
+if (guessCount === 0) {
+document.getElementById("score").textContent = 100;
 } else {
-document.getElementById("score").textContent =
-calculateScore(guessCount + 1);
+document.getElementById("score").textContent = getScore(guessCount);
 }
 }
 
@@ -1239,14 +1244,12 @@ correctSkylander =
 data[Math.floor(Math.random() * data.length)];
 
 guessCount = 0;
-gameOver = false;
 
 document.getElementById("guessTableBody").innerHTML = "";
 document.getElementById("winMessage").textContent = "";
 document.getElementById("guessInput").value = "";
-document.getElementById("autocomplete").innerHTML = "";
 
-updateScoreDisplay();
+updateScore();
 }
 
 /* =========================
@@ -1323,10 +1326,6 @@ MAKE GUESS
 ========================= */
 
 function makeGuess() {
-if (gameOver) {
-return;
-}
-
 const input =
 document.getElementById("guessInput");
 
@@ -1345,17 +1344,14 @@ alert("Skylander not found!");
 return;
 }
 
-/*
-Every valid Skylander guess counts.
-*/
+/* SCORING: count every valid guess */
 guessCount++;
+updateScore();
 
 addGuessRow(guess);
 
 input.value = "";
 document.getElementById("autocomplete").innerHTML = "";
-
-updateScoreDisplay();
 
 if (guess.name === correctSkylander.name) {
 showWin();
@@ -1440,14 +1436,10 @@ WIN MESSAGE
 ========================= */
 
 function showWin() {
-gameOver = true;
-
-const score = calculateScore(guessCount);
-
-document.getElementById("score").textContent = score;
+const score = getScore(guessCount);
 
 document.getElementById("winMessage").textContent =
-`🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points in ${guessCount} ${guessCount === 1 ? "guess" : "guesses"}!`;
+`🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
 }
 
 /* =========================
@@ -1466,7 +1458,7 @@ guessInput.value.toLowerCase().trim();
 
 autocomplete.innerHTML = "";
 
-if (!value || gameOver) {
+if (!value) {
 return;
 }
 
