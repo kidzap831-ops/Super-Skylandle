@@ -1548,6 +1548,39 @@ const levelMultipliers = {
   6: 5.0
 };
 
+const levelScoreRequirements = {
+  1: 0,
+  2: 100,
+  3: 500,
+  4: 2000,
+  5: 5000,
+  6: 10000
+};
+
+function isLevelUnlocked(level) {
+  return totalScore >= levelScoreRequirements[level];
+}
+
+function getHighestUnlockedLevel() {
+  let highest = 1;
+  for (let level = 1; level <= 6; level++) {
+    if (isLevelUnlocked(level)) highest = level;
+  }
+  return highest;
+}
+
+function enforceUnlockedLevel() {
+  const highestUnlocked = getHighestUnlockedLevel();
+  if (currentLevel > highestUnlocked) {
+    currentLevel = highestUnlocked;
+    localStorage.setItem("skylandleLevel", currentLevel);
+    updateLevelUI();
+    startGame();
+  } else {
+    updateLevelUI();
+  }
+}
+
 function getLevelPool() {
   const allowedGames = levelGames[currentLevel];
   return data.filter(skylander => allowedGames.includes(skylander.game));
@@ -1599,6 +1632,7 @@ async function loadProfile() {
     profile.username || currentUser.email || "Player";
 
   updateScore();
+  enforceUnlockedLevel();
 }
 
 async function refreshAccount(session) {
@@ -1615,6 +1649,7 @@ async function refreshAccount(session) {
     accountUsername.textContent = "Player";
     totalScore = 0;
     updateScore();
+    enforceUnlockedLevel();
     await loadLeaderboard();
   }
 }
@@ -2012,6 +2047,7 @@ async function showWin() {
   const score = getScore(guessCount);
   totalScore += score;
   gameOver = true;
+  updateLevelUI();
   stopRoundCooldown();
 
   document.getElementById("winMessage").textContent =
@@ -2117,10 +2153,19 @@ function updateLevelUI() {
   if (levelButtonNumber) levelButtonNumber.textContent = currentLevel;
 
   levelOptions.forEach(option => {
-    option.classList.toggle(
-      "selected",
-      Number(option.dataset.level) === currentLevel
-    );
+    const level = Number(option.dataset.level);
+    const unlocked = isLevelUnlocked(level);
+
+    option.classList.toggle("selected", level === currentLevel);
+    option.classList.toggle("locked", !unlocked);
+    option.setAttribute("aria-disabled", String(!unlocked));
+
+    const requirementText = option.querySelector(".level-requirement");
+    if (requirementText) {
+      requirementText.textContent = unlocked
+        ? (level === 1 ? "Unlocked" : "✓ Unlocked")
+        : `🔒 Requires ${levelScoreRequirements[level].toLocaleString()} total points`;
+    }
   });
 }
 
@@ -2154,7 +2199,11 @@ levelOverlay.addEventListener("click", event => {
 levelOptions.forEach(option => {
   option.addEventListener("click", () => {
     if (isRoundCooldownActive()) return;
-    currentLevel = Number(option.dataset.level);
+
+    const selectedLevel = Number(option.dataset.level);
+    if (!isLevelUnlocked(selectedLevel)) return;
+
+    currentLevel = selectedLevel;
     localStorage.setItem("skylandleLevel", currentLevel);
     updateLevelUI();
     closeLevelMenu();

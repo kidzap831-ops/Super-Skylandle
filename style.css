@@ -598,3 +598,23 @@ LEVEL MENU
   font-weight: 900;
   white-space: nowrap;
 }
+
+
+/* Level score unlocks */
+.level-requirement {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.level-option.locked {
+  opacity: 0.52;
+  filter: grayscale(0.7);
+  cursor: not-allowed;
+}
+
+.level-option.locked:hover {
+  transform: none;
+}
