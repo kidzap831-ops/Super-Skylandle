@@ -813,8 +813,6 @@ speed: 50,
 armor: 24
 },
 
-
-
 {
 name: "Bushwhack",
 element: "Life",
@@ -1209,32 +1207,36 @@ GAME VARIABLES
 
 let correctSkylander;
 let guessCount = 0;
+let totalScore = 0;
+let gameOver = false;
 
 /* =========================
 SCORING
 ========================= */
 
 function getScore(guesses) {
-if (guesses === 1) return 100;
-if (guesses === 2) return 50;
-if (guesses === 3) return 28;
-if (guesses === 4) return 17;
-if (guesses === 5) return 10;
-if (guesses === 6) return 7;
-if (guesses === 7) return 5;
-if (guesses === 8) return 4;
-if (guesses === 9) return 3;
-return 2;
+  if (guesses === 1) return 100;
+  if (guesses === 2) return 50;
+  if (guesses === 3) return 28;
+  if (guesses === 4) return 17;
+  if (guesses === 5) return 10;
+  if (guesses === 6) return 7;
+  if (guesses === 7) return 5;
+  if (guesses === 8) return 4;
+  if (guesses === 9) return 3;
+  return 2;
 }
 
 function updateScore() {
-document.getElementById("guessCount").textContent = guessCount;
+  document.getElementById("guessCount").textContent = guessCount;
 
-if (guessCount === 0) {
-document.getElementById("score").textContent = 100;
-} else {
-document.getElementById("score").textContent = getScore(guessCount);
-}
+  if (guessCount === 0) {
+    document.getElementById("score").textContent = 100;
+  } else {
+    document.getElementById("score").textContent = getScore(guessCount);
+  }
+
+  document.getElementById("totalScore").textContent = totalScore;
 }
 
 /* =========================
@@ -1242,16 +1244,21 @@ START GAME
 ========================= */
 
 function startGame() {
-correctSkylander =
-data[Math.floor(Math.random() * data.length)];
+  correctSkylander =
+    data[Math.floor(Math.random() * data.length)];
 
-guessCount = 0;
+  guessCount = 0;
+  gameOver = false;
 
-document.getElementById("guessTableBody").innerHTML = "";
-document.getElementById("winMessage").textContent = "";
-document.getElementById("guessInput").value = "";
+  document.getElementById("guessTableBody").innerHTML = "";
+  document.getElementById("winMessage").textContent = "";
+  document.getElementById("guessInput").value = "";
+  document.getElementById("autocomplete").innerHTML = "";
 
-updateScore();
+  document.getElementById("guessInput").disabled = false;
+  document.getElementById("guessButton").disabled = false;
+
+  updateScore();
 }
 
 /* =========================
@@ -1259,11 +1266,11 @@ CATEGORY CELLS
 ========================= */
 
 function categoryCell(guess, correct) {
-if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
-}
+  if (guess === correct) {
+    return `<div class="cell green">${guess}</div>`;
+  }
 
-return `<div class="cell gray">${guess}</div>`;
+  return `<div class="cell gray">${guess}</div>`;
 }
 
 /* =========================
@@ -1271,18 +1278,18 @@ ELEMENT CELL
 ========================= */
 
 function elementCell(guess, correct) {
-if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
-}
+  if (guess === correct) {
+    return `<div class="cell green">${guess}</div>`;
+  }
 
-if (
-relatedElements[correct] &&
-relatedElements[correct].includes(guess)
-) {
-return `<div class="cell yellow">${guess}</div>`;
-}
+  if (
+    relatedElements[correct] &&
+    relatedElements[correct].includes(guess)
+  ) {
+    return `<div class="cell yellow">${guess}</div>`;
+  }
 
-return `<div class="cell gray">${guess}</div>`;
+  return `<div class="cell gray">${guess}</div>`;
 }
 
 /* =========================
@@ -1290,11 +1297,11 @@ ATTACK FORM CELL
 ========================= */
 
 function attackFormCell(guess, correct) {
-if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
-}
+  if (guess === correct) {
+    return `<div class="cell green">${guess}</div>`;
+  }
 
-return `<div class="cell gray">${guess}</div>`;
+  return `<div class="cell gray">${guess}</div>`;
 }
 
 /* =========================
@@ -1302,25 +1309,25 @@ STAT CELL
 ========================= */
 
 function statCell(guess, correct) {
-if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
-}
+  if (guess === correct) {
+    return `<div class="cell green">${guess}</div>`;
+  }
 
-const difference = Math.abs(guess - correct) / correct;
+  const difference = Math.abs(guess - correct) / correct;
 
-let arrow = "";
+  let arrow = "";
 
-if (guess < correct) {
-arrow = " ↑";
-} else if (guess > correct) {
-arrow = " ↓";
-}
+  if (guess < correct) {
+    arrow = " ↑";
+  } else if (guess > correct) {
+    arrow = " ↓";
+  }
 
-if (difference <= 0.15) {
-return `<div class="cell yellow">${guess}${arrow}</div>`;
-}
+  if (difference <= 0.15) {
+    return `<div class="cell yellow">${guess}${arrow}</div>`;
+  }
 
-return `<div class="cell gray">${guess}${arrow}</div>`;
+  return `<div class="cell gray">${guess}${arrow}</div>`;
 }
 
 /* =========================
@@ -1328,36 +1335,43 @@ MAKE GUESS
 ========================= */
 
 function makeGuess() {
-const input =
-document.getElementById("guessInput");
 
-const guessName =
-input.value.trim();
+  /* STOP ALL GUESSES AFTER WINNING */
+  if (gameOver) {
+    return;
+  }
 
-const guess =
-data.find(
-skylander =>
-skylander.name.toLowerCase() ===
-guessName.toLowerCase()
-);
+  const input =
+    document.getElementById("guessInput");
 
-if (!guess) {
-alert("Skylander not found!");
-return;
-}
+  const guessName =
+    input.value.trim();
 
-/* COUNT VALID GUESSES */
-guessCount++;
-updateScore();
+  const guess =
+    data.find(
+      skylander =>
+        skylander.name.toLowerCase() ===
+        guessName.toLowerCase()
+    );
 
-addGuessRow(guess);
+  if (!guess) {
+    alert("Skylander not found!");
+    return;
+  }
 
-input.value = "";
-document.getElementById("autocomplete").innerHTML = "";
+  /* COUNT VALID GUESSES */
+  guessCount++;
 
-if (guess.name === correctSkylander.name) {
-showWin();
-}
+  updateScore();
+
+  addGuessRow(guess);
+
+  input.value = "";
+  document.getElementById("autocomplete").innerHTML = "";
+
+  if (guess.name === correctSkylander.name) {
+    showWin();
+  }
 }
 
 /* =========================
@@ -1365,17 +1379,17 @@ ADD GUESS ROW
 ========================= */
 
 function addGuessRow(guess) {
-const tableBody =
-document.getElementById("guessTableBody");
+  const tableBody =
+    document.getElementById("guessTableBody");
 
-const row =
-document.createElement("tr");
+  const row =
+    document.createElement("tr");
 
-row.innerHTML = `
+  row.innerHTML = `
 <td>
 ${categoryCell(
-guess.name,
-correctSkylander.name
+  guess.name,
+  correctSkylander.name
 )}
 </td>
 
@@ -1427,10 +1441,9 @@ correctSkylander.name
     correctSkylander.armor
   )}
 </td>
-
 `;
 
-tableBody.prepend(row);
+  tableBody.prepend(row);
 }
 
 /* =========================
@@ -1438,10 +1451,20 @@ WIN MESSAGE
 ========================= */
 
 function showWin() {
-const score = getScore(guessCount);
+  const score = getScore(guessCount);
 
-document.getElementById("winMessage").textContent =
-`🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
+  totalScore += score;
+
+  gameOver = true;
+
+  document.getElementById("winMessage").textContent =
+    `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
+
+  document.getElementById("guessInput").disabled = true;
+  document.getElementById("guessButton").disabled = true;
+  document.getElementById("autocomplete").innerHTML = "";
+
+  updateScore();
 }
 
 /* =========================
@@ -1449,48 +1472,57 @@ AUTOCOMPLETE
 ========================= */
 
 const guessInput =
-document.getElementById("guessInput");
+  document.getElementById("guessInput");
 
 const autocomplete =
-document.getElementById("autocomplete");
+  document.getElementById("autocomplete");
 
 guessInput.addEventListener("input", () => {
-const value =
-guessInput.value.toLowerCase().trim();
 
-autocomplete.innerHTML = "";
+  if (gameOver) {
+    return;
+  }
 
-if (!value) {
-return;
-}
+  const value =
+    guessInput.value.toLowerCase().trim();
 
-const matches =
-data.filter(skylander =>
-skylander.name
-.toLowerCase()
-.includes(value)
-);
+  autocomplete.innerHTML = "";
 
-matches.forEach(skylander => {
-const item =
-document.createElement("div");
+  if (!value) {
+    return;
+  }
 
-item.className =
-"autocomplete-item";
+  const matches =
+    data.filter(skylander =>
+      skylander.name
+        .toLowerCase()
+        .includes(value)
+    );
 
-item.textContent =
-skylander.name;
+  matches.forEach(skylander => {
 
-item.addEventListener("click", () => {
-guessInput.value =
-skylander.name;
+    const item =
+      document.createElement("div");
 
-autocomplete.innerHTML = "";
-});
+    item.className =
+      "autocomplete-item";
 
-autocomplete.appendChild(item);
+    item.textContent =
+      skylander.name;
 
-});
+    item.addEventListener("click", () => {
+      if (gameOver) {
+        return;
+      }
+
+      guessInput.value =
+        skylander.name;
+
+      autocomplete.innerHTML = "";
+    });
+
+    autocomplete.appendChild(item);
+  });
 });
 
 /* =========================
@@ -1498,21 +1530,23 @@ BUTTONS
 ========================= */
 
 document
-.getElementById("guessButton")
-.addEventListener("click", makeGuess);
+  .getElementById("guessButton")
+  .addEventListener("click", makeGuess);
 
 document
-.getElementById("newGameButton")
-.addEventListener("click", startGame);
+  .getElementById("newGameButton")
+  .addEventListener("click", startGame);
 
 /* =========================
 ENTER KEY
 ========================= */
 
 guessInput.addEventListener("keydown", event => {
-if (event.key === "Enter") {
-makeGuess();
-}
+
+  if (event.key === "Enter") {
+    makeGuess();
+  }
+
 });
 
 /* =========================
