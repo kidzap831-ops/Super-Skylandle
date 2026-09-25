@@ -1279,12 +1279,14 @@ async function refreshAccount(session) {
     loggedOutView.classList.add("hidden");
     loggedInView.classList.remove("hidden");
     await loadProfile();
+    await loadLeaderboard();
   } else {
     loggedOutView.classList.remove("hidden");
     loggedInView.classList.add("hidden");
     accountUsername.textContent = "Player";
     totalScore = 0;
     updateScore();
+    await loadLeaderboard();
   }
 }
 
@@ -1387,6 +1389,7 @@ async function saveScore(score) {
     setAuthMessage("Your game finished, but the score could not be saved.", true);
   } else {
     setAuthMessage("Score saved!");
+    await loadLeaderboard();
   }
 }
 
@@ -1398,6 +1401,80 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   // Delay database work until the auth callback has finished.
   setTimeout(() => refreshAccount(session), 0);
 });
+
+
+/* =========================
+LEADERBOARD
+========================= */
+
+const leaderboardBody = document.getElementById("leaderboardBody");
+const yourRank = document.getElementById("yourRank");
+const refreshLeaderboardButton = document.getElementById("refreshLeaderboardButton");
+
+function showLeaderboardMessage(message) {
+  leaderboardBody.innerHTML =
+    `<tr><td colspan="3" class="leaderboard-status">${message}</td></tr>`;
+}
+
+async function loadLeaderboard() {
+  if (!currentUser) {
+    yourRank.classList.add("hidden");
+    showLeaderboardMessage("Log in to view the leaderboard.");
+    return;
+  }
+
+  refreshLeaderboardButton.disabled = true;
+  showLeaderboardMessage("Loading leaderboard...");
+
+  const { data: players, error } = await supabaseClient.rpc("get_leaderboard");
+
+  refreshLeaderboardButton.disabled = false;
+
+  if (error) {
+    console.error("Could not load leaderboard:", error);
+    yourRank.classList.add("hidden");
+    showLeaderboardMessage("Could not load the leaderboard.");
+    return;
+  }
+
+  const top50 = players.filter(player => Number(player.rank) <= 50);
+  const me = players.find(player => player.is_you);
+
+  leaderboardBody.innerHTML = "";
+
+  if (top50.length === 0) {
+    showLeaderboardMessage("No players on the leaderboard yet.");
+  } else {
+    top50.forEach(player => {
+      const row = document.createElement("tr");
+
+      if (player.is_you) {
+        row.classList.add("is-you");
+      }
+
+      const rankCell = document.createElement("td");
+      const usernameCell = document.createElement("td");
+      const scoreCell = document.createElement("td");
+
+      rankCell.textContent = `#${player.rank}`;
+      usernameCell.textContent = player.username || "Unnamed player";
+      scoreCell.textContent = Number(player.total_score || 0).toLocaleString();
+
+      row.append(rankCell, usernameCell, scoreCell);
+      leaderboardBody.appendChild(row);
+    });
+  }
+
+  if (me) {
+    yourRank.textContent =
+      `Your Rank: #${me.rank} — ${Number(me.total_score || 0).toLocaleString()} points`;
+    yourRank.classList.remove("hidden");
+  } else {
+    yourRank.classList.add("hidden");
+  }
+}
+
+refreshLeaderboardButton.addEventListener("click", loadLeaderboard);
 
 /* =========================
 SCORING
