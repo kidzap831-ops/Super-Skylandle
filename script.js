@@ -1526,6 +1526,10 @@ let totalScore = 0;
 let gameOver = false;
 let currentLevel = Number(localStorage.getItem("skylandleLevel")) || 4;
 
+const ROUND_COOLDOWN_SECONDS = 60;
+let cooldownEndTime = 0;
+let cooldownTimer = null;
+
 const levelGames = {
   1: ["Spyro's Adventure"],
   2: ["Spyro's Adventure", "Giants"],
@@ -1812,7 +1816,7 @@ function getBaseScore(guesses) {
     if (guesses === 4) return 6.6;
     if (guesses === 5) return 4.6;
     if (guesses === 6) return 3.4;
-    if (guesses === 7) return 2,4;
+    if (guesses === 7) return 2.4;
     if (guesses === 8) return 1.8;
     if (guesses === 9) return 1.4;
   if (guesses === 10) return 1.25;
@@ -1833,6 +1837,67 @@ function updateScore() {
 }
 
 /* =========================
+ROUND COOLDOWN
+========================= */
+
+const newGameButton = document.getElementById("newGameButton");
+
+function getCooldownSecondsLeft() {
+  return Math.max(0, Math.ceil((cooldownEndTime - Date.now()) / 1000));
+}
+
+function isRoundCooldownActive() {
+  return !gameOver && getCooldownSecondsLeft() > 0;
+}
+
+function updateCooldownUI() {
+  const secondsLeft = getCooldownSecondsLeft();
+  const active = !gameOver && secondsLeft > 0;
+
+  newGameButton.disabled = active;
+  levelToggleButton.disabled = active;
+
+  if (active) {
+    newGameButton.textContent = `New Game (${secondsLeft}s)`;
+    levelToggleButton.innerHTML = `🎮 Level <span id="levelButtonNumber">${currentLevel}</span> (${secondsLeft}s)`;
+  } else {
+    newGameButton.textContent = "New Game";
+    levelToggleButton.innerHTML = `🎮 Level <span id="levelButtonNumber">${currentLevel}</span>`;
+  }
+}
+
+function stopRoundCooldown() {
+  cooldownEndTime = 0;
+
+  if (cooldownTimer) {
+    clearInterval(cooldownTimer);
+    cooldownTimer = null;
+  }
+
+  updateCooldownUI();
+}
+
+function startRoundCooldown() {
+  if (cooldownTimer) {
+    clearInterval(cooldownTimer);
+  }
+
+  cooldownEndTime = Date.now() + ROUND_COOLDOWN_SECONDS * 1000;
+  updateCooldownUI();
+
+  cooldownTimer = setInterval(() => {
+    updateCooldownUI();
+
+    if (getCooldownSecondsLeft() <= 0) {
+      clearInterval(cooldownTimer);
+      cooldownTimer = null;
+      cooldownEndTime = 0;
+      updateCooldownUI();
+    }
+  }, 250);
+}
+
+/* =========================
 START GAME
 ========================= */
 
@@ -1850,6 +1915,7 @@ function startGame() {
   document.getElementById("guessButton").disabled = false;
 
   updateScore();
+  startRoundCooldown();
 }
 
 /* =========================
@@ -1946,6 +2012,7 @@ async function showWin() {
   const score = getScore(guessCount);
   totalScore += score;
   gameOver = true;
+  stopRoundCooldown();
 
   document.getElementById("winMessage").textContent =
     `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
@@ -2042,11 +2109,12 @@ LEVEL MENU
 const levelToggleButton = document.getElementById("levelToggleButton");
 const levelOverlay = document.getElementById("levelOverlay");
 const closeLevelButton = document.getElementById("closeLevelButton");
-const levelButtonNumber = document.getElementById("levelButtonNumber");
+let levelButtonNumber = document.getElementById("levelButtonNumber");
 const levelOptions = document.querySelectorAll(".level-option");
 
 function updateLevelUI() {
-  levelButtonNumber.textContent = currentLevel;
+  levelButtonNumber = document.getElementById("levelButtonNumber");
+  if (levelButtonNumber) levelButtonNumber.textContent = currentLevel;
 
   levelOptions.forEach(option => {
     option.classList.toggle(
@@ -2057,6 +2125,7 @@ function updateLevelUI() {
 }
 
 function openLevelMenu() {
+  if (isRoundCooldownActive()) return;
   levelOverlay.classList.remove("hidden");
   levelToggleButton.setAttribute("aria-expanded", "true");
 }
@@ -2084,6 +2153,7 @@ levelOverlay.addEventListener("click", event => {
 
 levelOptions.forEach(option => {
   option.addEventListener("click", () => {
+    if (isRoundCooldownActive()) return;
     currentLevel = Number(option.dataset.level);
     localStorage.setItem("skylandleLevel", currentLevel);
     updateLevelUI();
@@ -2105,7 +2175,10 @@ BUTTONS / START
 ========================= */
 
 document.getElementById("guessButton").addEventListener("click", makeGuess);
-document.getElementById("newGameButton").addEventListener("click", startGame);
+newGameButton.addEventListener("click", () => {
+  if (isRoundCooldownActive()) return;
+  startGame();
+});
 
 guessInput.addEventListener("keydown", event => {
   if (event.key === "Enter") makeGuess();
