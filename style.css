@@ -1,197 +1,268 @@
 * {
   box-sizing: border-box;
-}
+  }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #111827;
-  color: white;
+margin: 0;
+font-family: Arial, sans-serif;
+background: #111827;
+color: white;
 }
 
 .container {
-  width: 95%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 30px 0;
-  text-align: center;
+width: 95%;
+max-width: 1400px;
+margin: 0 auto;
+padding: 30px 0;
+text-align: center;
 }
 
 h1 {
-  margin-bottom: 5px;
-  font-size: 48px;
+margin-bottom: 5px;
+font-size: 48px;
 }
 
 .subtitle {
-  margin-top: 0;
-  color: #9ca3af;
-  font-size: 18px;
+margin-top: 0;
+color: #9ca3af;
+font-size: 18px;
 }
 
+/* =========================
+SCORE BOARD
+========================= */
+
+.score-board {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin: 20px 0;
+}
+
+.score-box {
+min-width: 120px;
+padding: 12px 20px;
+background: #1f2937;
+border: 2px solid #374151;
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+
+.score-label {
+color: #9ca3af;
+font-size: 13px;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.score-box span:last-child {
+font-size: 28px;
+font-weight: bold;
+}
+
+/* =========================
+CONTROLS
+========================= */
+
 .game-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 25px 0 10px;
-  flex-wrap: wrap;
+display: flex;
+justify-content: center;
+gap: 10px;
+margin: 25px 0 10px;
+flex-wrap: wrap;
 }
 
 #guessInput {
-  width: 300px;
-  padding: 12px 15px;
-  border: 2px solid #374151;
-  border-radius: 8px;
-  background: #1f2937;
-  color: white;
-  font-size: 16px;
-  outline: none;
+width: 300px;
+padding: 12px 15px;
+border: 2px solid #374151;
+border-radius: 8px;
+background: #1f2937;
+color: white;
+font-size: 16px;
+outline: none;
 }
 
 #guessInput:focus {
-  border-color: #60a5fa;
+border-color: #60a5fa;
 }
 
 button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+padding: 12px 18px;
+border: none;
+border-radius: 8px;
+background: #2563eb;
+color: white;
+font-size: 16px;
+cursor: pointer;
 }
 
 button:hover {
-  background: #1d4ed8;
+background: #1d4ed8;
 }
 
 #newGameButton {
-  background: #4b5563;
+background: #4b5563;
 }
 
 #newGameButton:hover {
-  background: #374151;
+background: #374151;
 }
 
+/* =========================
+AUTOCOMPLETE
+========================= */
+
 .autocomplete {
-  position: relative;
-  width: 300px;
-  margin: 0 auto;
-  text-align: left;
-  z-index: 10;
+position: relative;
+width: 300px;
+margin: 0 auto;
+text-align: left;
+z-index: 10;
 }
 
 .autocomplete-item {
-  padding: 10px 15px;
-  background: #1f2937;
-  border: 1px solid #374151;
-  cursor: pointer;
+padding: 10px 15px;
+background: #1f2937;
+border: 1px solid #374151;
+cursor: pointer;
 }
 
 .autocomplete-item:hover {
-  background: #374151;
+background: #374151;
 }
+
+/* =========================
+WIN MESSAGE
+========================= */
 
 .win-message {
-  min-height: 30px;
-  margin: 20px 0;
-  font-size: 20px;
-  font-weight: bold;
+min-height: 30px;
+margin: 20px 0;
+font-size: 20px;
+font-weight: bold;
 }
 
+/* =========================
+TABLE
+========================= */
+
 .table-wrapper {
-  overflow-x: auto;
-  margin-top: 20px;
+overflow-x: auto;
+margin-top: 20px;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 950px;
+width: 100%;
+border-collapse: collapse;
+min-width: 950px;
 }
 
 th {
-  padding: 14px 10px;
-  background: #1f2937;
-  border: 1px solid #374151;
-  font-size: 14px;
+padding: 14px 10px;
+background: #1f2937;
+border: 1px solid #374151;
+font-size: 14px;
 }
 
 td {
-  padding: 8px;
-  border: 1px solid #374151;
+padding: 8px;
+border: 1px solid #374151;
 }
 
 .cell {
-  min-height: 45px;
-  padding: 12px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  font-weight: bold;
+min-height: 45px;
+padding: 12px 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 5px;
+font-weight: bold;
 }
 
 .green {
-  background: #16a34a;
-  color: white;
+background: #16a34a;
+color: white;
 }
 
 .yellow {
-  background: #ca8a04;
-  color: white;
+background: #ca8a04;
+color: white;
 }
 
 .gray {
-  background: #4b5563;
-  color: white;
+background: #4b5563;
+color: white;
 }
 
+/* =========================
+LEGEND
+========================= */
+
 .legend {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-  margin-top: 25px;
-  color: #d1d5db;
+display: flex;
+justify-content: center;
+gap: 25px;
+flex-wrap: wrap;
+margin-top: 25px;
+color: #d1d5db;
 }
 
 .legend div {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+display: flex;
+align-items: center;
+gap: 7px;
 }
 
 .legend-box {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  border-radius: 4px;
+width: 20px;
+height: 20px;
+display: inline-block;
+border-radius: 4px;
 }
 
 .legend-box.green {
-  background: #16a34a;
+background: #16a34a;
 }
 
 .legend-box.yellow {
-  background: #ca8a04;
+background: #ca8a04;
 }
 
 .legend-box.gray {
-  background: #4b5563;
+background: #4b5563;
 }
 
+/* =========================
+MOBILE
+========================= */
+
 @media (max-width: 700px) {
-  h1 {
-    font-size: 38px;
-  }
+h1 {
+font-size: 38px;
+}
 
-  #guessInput {
-    width: 250px;
-  }
+#guessInput {
+width: 250px;
+}
 
-  .legend {
-    gap: 12px;
-    font-size: 14px;
-  }
+.legend {
+gap: 12px;
+font-size: 14px;
+}
+
+.score-board {
+gap: 10px;
+}
+
+.score-box {
+min-width: 105px;
+padding: 10px 15px;
+}
+
+.score-box span:last-child {
+font-size: 24px;
+}
 }
