@@ -417,3 +417,25 @@ POP-UP LEADERBOARD
     max-height: calc(100vh - 72px);
   }
 }
+
+
+/* Cache-busted leaderboard positioning fix */
+#leaderboardToggleButton {
+  position: fixed !important;
+  top: 16px !important;
+  left: 16px !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 1001 !important;
+  margin: 0 !important;
+}
+
+#leaderboardOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+}
+
+#leaderboardOverlay.hidden {
+  display: none !important;
+}

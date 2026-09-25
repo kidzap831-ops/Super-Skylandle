@@ -1727,3 +1727,15 @@ async function initialize() {
 }
 
 initialize();
+
+
+// Leaderboard UI safety initialization.
+window.addEventListener("load", () => {
+  const button = document.getElementById("leaderboardToggleButton");
+  const overlay = document.getElementById("leaderboardOverlay");
+  if (button && overlay) {
+    button.style.position = "fixed";
+    button.style.top = "16px";
+    button.style.left = "16px";
+  }
+});
