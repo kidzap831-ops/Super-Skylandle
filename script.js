@@ -1524,7 +1524,7 @@ let correctSkylander;
 let guessCount = 0;
 let totalScore = 0;
 let gameOver = false;
-let currentLevel = Number(localStorage.getItem("skylandleLevel")) || 4;
+let currentLevel = Number(localStorage.getItem("skylandleLevel")) || 1;
 
 const ROUND_COOLDOWN_SECONDS = 60;
 let cooldownEndTime = 0;
