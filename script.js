@@ -849,17 +849,7 @@ health: 430,
 speed: 20,
 armor: 24
 },
-{
-name: "Kaos",
-element: "Dark",
-game: "Villian",
-gimmick: "Villain",
-attackForm: "Sorcery",
-color: "Dark",
-health: 450,
-speed: 40,
-armor: 30
-},
+
 {
 name: "Bash",
 element: "Earth",
