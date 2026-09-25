@@ -1302,6 +1302,186 @@ health: 280,
 speed: 35,
 armor: 30
 },
+{
+name: "Air Strike",
+element: "Air",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Blue",
+health: 300,
+speed: 12,
+armor: 12
+},
+{
+name: "Wild Storm",
+element: "Air",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Blue",
+health: 310,
+speed: 15,
+armor: 14
+},
+{
+name: "Barbella",
+element: "Earth",
+game: "Imaginators",
+attackForm: "Heavy Melee",
+color: "Orange",
+health: 350,
+speed: 8,
+armor: 14
+},
+{
+name: "Tri-Tip",
+element: "Earth",
+game: "Imaginators",
+attackForm: "Heavy Melee",
+color: "Brown",
+health: 370,
+speed: 8,
+armor: 10
+},
+{
+name: "Ember",
+element: "Fire",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Orange",
+health: 260,
+speed: 8,
+armor: 4
+},
+{
+name: "Flare Wolf",
+element: "Fire",
+game: "Imaginators",
+attackForm: "Ranged",
+color: "Red",
+health: 270,
+speed: 15,
+armor: 6
+},
+{
+name: "Ambush",
+element: "Life",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Green",
+health: 340,
+speed: 8,
+armor: 8
+},
+{
+name: "Boom Bloom",
+element: "Life",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Green",
+health: 320,
+speed: 8,
+armor: 8
+},
+{
+name: "Buckshot",
+element: "Magic",
+game: "Imaginators",
+attackForm: "Ranged",
+color: "Pink",
+health: 240,
+speed: 15,
+armor: 4
+},
+{
+name: "Mysticat",
+element: "Magic",
+game: "Imaginators",
+attackForm: "Beam",
+color: "Purple",
+health: 220,
+speed: 15,
+armor: 2
+},
+{
+name: "Chain Reaction",
+element: "Tech",
+game: "Imaginators",
+attackForm: "Heavy Melee",
+color: "Brown",
+health: 240,
+speed: 8,
+armor: 10
+},
+{
+name: "Ro-Bow",
+element: "Tech",
+game: "Imaginators",
+attackForm: "Ranged",
+color: "Green",
+health: 210,
+speed: 8,
+armor: 4
+},
+{
+name: "Chopscotch",
+element: "Undead",
+game: "Imaginators",
+attackForm: "Heavy Melee",
+color: "Grey",
+health: 310,
+speed: 15,
+armor: 8
+},
+{
+name: "Pit Boss",
+element: "Undead",
+game: "Imaginators",
+attackForm: "Sorcery",
+color: "Black",
+health: 250,
+speed: 8,
+armor: 8
+},
+{
+name: "King Pen",
+element: "Water",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "Black",
+health: 300,
+speed: 8,
+armor: 10
+},
+{
+name: "Tidepool",
+element: "Water",
+game: "Imaginators",
+attackForm: "Ranged",
+color: "Blue",
+health: 280,
+speed: 15,
+armor: 8
+},
+{
+name: "Aurora",
+element: "Light",
+game: "Imaginators",
+attackForm: "Light Melee",
+color: "White",
+health: 240,
+speed: 20,
+armor: 10
+},
+{
+name: "Starcast",
+element: "Dark",
+game: "Imaginators",
+attackForm: "Thrower",
+color: "Blue",
+health: 290,
+speed: 15,
+armor: 6
+},
   
 ];
 
