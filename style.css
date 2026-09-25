@@ -29,7 +29,7 @@ font-size: 18px;
 }
 
 /* =========================
-SCORE BOARD
+SCORE SYSTEM
 ========================= */
 
 .score-board {
@@ -40,30 +40,30 @@ margin: 20px 0;
 }
 
 .score-box {
-min-width: 120px;
-padding: 12px 20px;
+min-width: 110px;
+padding: 10px 18px;
 background: #1f2937;
 border: 2px solid #374151;
-border-radius: 10px;
+border-radius: 8px;
 display: flex;
 flex-direction: column;
-gap: 4px;
+align-items: center;
 }
 
 .score-label {
 color: #9ca3af;
-font-size: 13px;
+font-size: 12px;
 text-transform: uppercase;
-letter-spacing: 1px;
+margin-bottom: 3px;
 }
 
 .score-box span:last-child {
-font-size: 28px;
+font-size: 26px;
 font-weight: bold;
 }
 
 /* =========================
-CONTROLS
+ORIGINAL GAME CONTROLS
 ========================= */
 
 .game-controls {
@@ -111,10 +111,6 @@ background: #4b5563;
 background: #374151;
 }
 
-/* =========================
-AUTOCOMPLETE
-========================= */
-
 .autocomplete {
 position: relative;
 width: 300px;
@@ -134,20 +130,12 @@ cursor: pointer;
 background: #374151;
 }
 
-/* =========================
-WIN MESSAGE
-========================= */
-
 .win-message {
 min-height: 30px;
 margin: 20px 0;
 font-size: 20px;
 font-weight: bold;
 }
-
-/* =========================
-TABLE
-========================= */
 
 .table-wrapper {
 overflow-x: auto;
@@ -197,10 +185,6 @@ background: #4b5563;
 color: white;
 }
 
-/* =========================
-LEGEND
-========================= */
-
 .legend {
 display: flex;
 justify-content: center;
@@ -235,10 +219,6 @@ background: #ca8a04;
 background: #4b5563;
 }
 
-/* =========================
-MOBILE
-========================= */
-
 @media (max-width: 700px) {
 h1 {
 font-size: 38px;
@@ -258,11 +238,11 @@ gap: 10px;
 }
 
 .score-box {
-min-width: 105px;
-padding: 10px 15px;
+min-width: 95px;
+padding: 8px 12px;
 }
 
 .score-box span:last-child {
-font-size: 24px;
+font-size: 22px;
 }
 }
