@@ -1,4 +1,4 @@
-here is the 3rd file: * {
+* {
   box-sizing: border-box;
 }
 
@@ -26,6 +26,35 @@ h1 {
   margin-top: 0;
   color: #9ca3af;
   font-size: 18px;
+}
+
+/* Score board */
+.score-board {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.score-box {
+  min-width: 120px;
+  padding: 10px 20px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+}
+
+.score-label {
+  display: block;
+  color: #9ca3af;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.score-box span:last-child {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .game-controls {
@@ -195,4 +224,3 @@ td {
     font-size: 14px;
   }
 }
-
