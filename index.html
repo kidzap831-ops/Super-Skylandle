@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skylandle</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <main class="page">
@@ -115,9 +115,74 @@
         </table>
       </div>
     </section>
+
+    <button id="levelToggleButton" class="level-toggle" type="button" aria-expanded="false">
+      🎮 Level <span id="levelButtonNumber">4</span>
+    </button>
+
+    <div id="levelOverlay" class="level-overlay hidden">
+      <aside class="level-panel" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
+        <div class="level-heading">
+          <div>
+            <h2 id="levelTitle">🎮 Choose Level</h2>
+            <p class="muted">Choose which Skylanders games are included.</p>
+          </div>
+          <button id="closeLevelButton" type="button" class="secondary">✕ Close</button>
+        </div>
+
+        <div class="level-options">
+          <button class="level-option" type="button" data-level="1">
+            <span class="level-number">Level 1</span>
+            <span class="multiplier-badge">1× points</span>
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+            </span>
+          </button>
+
+          <button class="level-option" type="button" data-level="2">
+            <span class="level-number">Level 2</span>
+            <span class="multiplier-badge">1.10× points</span>
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Giants</span>
+            </span>
+          </button>
+
+          <button class="level-option" type="button" data-level="3">
+            <span class="level-number">Level 3</span>
+            <span class="multiplier-badge">1.4× points</span>
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Giants</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Swap Force</span>
+            </span>
+          </button>
+
+          <button class="level-option selected" type="button" data-level="4">
+            <span class="level-number">Level 4</span>
+            <span class="multiplier-badge">2.0× points</span>
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Giants</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Swap Force</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Trap Team</span>
+            </span>
+          </button>
+        </div>
+
+        <p class="level-note">Changing level starts a new game. Your saved total score is not reset.</p>
+      </aside>
+    </div>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>

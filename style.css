@@ -439,3 +439,162 @@ POP-UP LEADERBOARD
 #leaderboardOverlay.hidden {
   display: none !important;
 }
+
+
+/* =========================
+LEVEL MENU
+========================= */
+
+#levelToggleButton {
+  position: fixed !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 1001 !important;
+  margin: 0 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+#levelOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(5, 7, 12, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 16px 16px 70px;
+}
+
+#levelOverlay.hidden {
+  display: none !important;
+}
+
+.level-panel {
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 90px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid #3a4050;
+  border-radius: 16px;
+  background: #181b23;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+.level-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.level-heading h2,
+.level-heading p {
+  margin-top: 0;
+}
+
+.level-heading h2 {
+  margin-bottom: 4px;
+}
+
+.level-options {
+  display: grid;
+  gap: 10px;
+}
+
+.level-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 14px;
+  border: 1px solid #343a48;
+  background: #20242e;
+}
+
+.level-option:hover {
+  background: #292e3a;
+}
+
+.level-option.selected {
+  border-color: #8d78ff;
+  box-shadow: 0 0 0 2px rgba(117, 87, 255, 0.2);
+  background: rgba(117, 87, 255, 0.13);
+}
+
+.level-number {
+  min-width: 72px;
+  font-weight: 900;
+  color: white;
+}
+
+.game-path {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.game-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #343a48;
+  color: #eef0f8;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.game-plus {
+  color: #8d78ff;
+  font-weight: 900;
+}
+
+.level-note {
+  margin: 14px 0 0;
+  color: #aeb5c7;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+  #levelToggleButton {
+    right: 10px !important;
+    bottom: 10px !important;
+  }
+
+  #levelOverlay {
+    padding: 10px 10px 62px;
+  }
+
+  .level-panel {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 72px);
+  }
+
+  .level-option {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+
+.multiplier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(141, 120, 255, 0.16);
+  border: 1px solid rgba(141, 120, 255, 0.45);
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}

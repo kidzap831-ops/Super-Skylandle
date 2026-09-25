@@ -733,7 +733,7 @@ armor: 30
 },
 {
 name: "Star Strike",
-element: "Magic",
+element: "Megic",
 game: "Swap Force",
 attackForm: "Sorcery",
 color: "Blue",
@@ -1223,6 +1223,26 @@ let correctSkylander;
 let guessCount = 0;
 let totalScore = 0;
 let gameOver = false;
+let currentLevel = Number(localStorage.getItem("skylandleLevel")) || 4;
+
+const levelGames = {
+  1: ["Spyro's Adventure"],
+  2: ["Spyro's Adventure", "Giants"],
+  3: ["Spyro's Adventure", "Giants", "Swap Force"],
+  4: ["Spyro's Adventure", "Giants", "Swap Force", "Trap Team"]
+};
+
+const levelMultipliers = {
+  1: 1,
+  2: 1.10,
+  3: 1.4,
+  4: 2.0
+};
+
+function getLevelPool() {
+  const allowedGames = levelGames[currentLevel];
+  return data.filter(skylander => allowedGames.includes(skylander.game));
+}
 
 /* =========================
 ACCOUNT HELPERS
@@ -1480,19 +1500,22 @@ refreshLeaderboardButton.addEventListener("click", loadLeaderboard);
 SCORING
 ========================= */
 
+function getBaseScore(guesses) {
+  if (guesses === 1) return 100;
+    if (guesses === 2) return 50;
+    if (guesses === 3) return 28;
+    if (guesses === 4) return 17;
+    if (guesses === 5) return 10;
+    if (guesses === 6) return 7;
+    if (guesses === 7) return 5;
+    if (guesses === 8) return 4;
+    if (guesses === 9) return 3;
+    return 2;
+}
+
 function getScore(guesses) {
-  if (guesses === 1) return 200;
-  if (guesses === 2) return 75;
-  if (guesses === 3) return 44;
-  if (guesses === 4) return 32;
-  if (guesses === 5) return 23;
-  if (guesses === 6) return 17;
-  if (guesses === 7) return 12;
-  if (guesses === 8) return 9;
-  if (guesses === 9) return 7;
-  if (guesses === 10) return 6;
-  if (guesses === 11) return 6;
-  return 5;
+  const baseScore = getBaseScore(guesses);
+  return Math.floor(baseScore * levelMultipliers[currentLevel]);
 }
 
 function updateScore() {
@@ -1507,7 +1530,8 @@ START GAME
 ========================= */
 
 function startGame() {
-  correctSkylander = data[Math.floor(Math.random() * data.length)];
+  const levelPool = getLevelPool();
+  correctSkylander = levelPool[Math.floor(Math.random() * levelPool.length)];
   guessCount = 0;
   gameOver = false;
 
@@ -1569,7 +1593,7 @@ function makeGuess() {
   const input = document.getElementById("guessInput");
   const guessName = input.value.trim();
 
-  const guess = data.find(
+  const guess = getLevelPool().find(
     skylander => skylander.name.toLowerCase() === guessName.toLowerCase()
   );
 
@@ -1642,7 +1666,7 @@ guessInput.addEventListener("input", () => {
 
   if (!value) return;
 
-  const matches = data
+  const matches = getLevelPool()
     .filter(skylander => skylander.name.toLowerCase().includes(value))
     .slice(0, 12);
 
@@ -1702,6 +1726,72 @@ document.addEventListener("keydown", event => {
     closeLeaderboard();
   }
 });
+
+
+/* =========================
+LEVEL MENU
+========================= */
+
+const levelToggleButton = document.getElementById("levelToggleButton");
+const levelOverlay = document.getElementById("levelOverlay");
+const closeLevelButton = document.getElementById("closeLevelButton");
+const levelButtonNumber = document.getElementById("levelButtonNumber");
+const levelOptions = document.querySelectorAll(".level-option");
+
+function updateLevelUI() {
+  levelButtonNumber.textContent = currentLevel;
+
+  levelOptions.forEach(option => {
+    option.classList.toggle(
+      "selected",
+      Number(option.dataset.level) === currentLevel
+    );
+  });
+}
+
+function openLevelMenu() {
+  levelOverlay.classList.remove("hidden");
+  levelToggleButton.setAttribute("aria-expanded", "true");
+}
+
+function closeLevelMenu() {
+  levelOverlay.classList.add("hidden");
+  levelToggleButton.setAttribute("aria-expanded", "false");
+}
+
+levelToggleButton.addEventListener("click", () => {
+  if (levelOverlay.classList.contains("hidden")) {
+    openLevelMenu();
+  } else {
+    closeLevelMenu();
+  }
+});
+
+closeLevelButton.addEventListener("click", closeLevelMenu);
+
+levelOverlay.addEventListener("click", event => {
+  if (event.target === levelOverlay) {
+    closeLevelMenu();
+  }
+});
+
+levelOptions.forEach(option => {
+  option.addEventListener("click", () => {
+    currentLevel = Number(option.dataset.level);
+    localStorage.setItem("skylandleLevel", currentLevel);
+    updateLevelUI();
+    closeLevelMenu();
+    startGame();
+  });
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !levelOverlay.classList.contains("hidden")) {
+    closeLevelMenu();
+  }
+});
+
+updateLevelUI();
 
 /* =========================
 BUTTONS / START
