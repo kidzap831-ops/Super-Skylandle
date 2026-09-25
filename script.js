@@ -813,6 +813,8 @@ speed: 50,
 armor: 24
 },
 
+
+
 {
 name: "Bushwhack",
 element: "Life",
@@ -1206,34 +1208,6 @@ GAME VARIABLES
 ========================= */
 
 let correctSkylander;
-let guessCount = 0;
-
-/* =========================
-SCORING
-========================= */
-
-function getScore(guesses) {
-if (guesses === 1) return 100;
-if (guesses === 2) return 50;
-if (guesses === 3) return 28;
-if (guesses === 4) return 17;
-if (guesses === 5) return 10;
-if (guesses === 6) return 7;
-if (guesses === 7) return 5;
-if (guesses === 8) return 4;
-if (guesses === 9) return 3;
-return 2;
-}
-
-function updateScore() {
-document.getElementById("guessCount").textContent = guessCount;
-
-if (guessCount === 0) {
-document.getElementById("score").textContent = 100;
-} else {
-document.getElementById("score").textContent = getScore(guessCount);
-}
-}
 
 /* =========================
 START GAME
@@ -1243,13 +1217,9 @@ function startGame() {
 correctSkylander =
 data[Math.floor(Math.random() * data.length)];
 
-guessCount = 0;
-
 document.getElementById("guessTableBody").innerHTML = "";
 document.getElementById("winMessage").textContent = "";
 document.getElementById("guessInput").value = "";
-
-updateScore();
 }
 
 /* =========================
@@ -1258,10 +1228,10 @@ CATEGORY CELLS
 
 function categoryCell(guess, correct) {
 if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
+return <div class="cell green">${guess}</div>;
 }
 
-return `<div class="cell gray">${guess}</div>`;
+return <div class="cell gray">${guess}</div>;
 }
 
 /* =========================
@@ -1270,17 +1240,17 @@ ELEMENT CELL
 
 function elementCell(guess, correct) {
 if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
+return <div class="cell green">${guess}</div>;
 }
 
 if (
 relatedElements[correct] &&
 relatedElements[correct].includes(guess)
 ) {
-return `<div class="cell yellow">${guess}</div>`;
+return <div class="cell yellow">${guess}</div>;
 }
 
-return `<div class="cell gray">${guess}</div>`;
+return <div class="cell gray">${guess}</div>;
 }
 
 /* =========================
@@ -1289,10 +1259,10 @@ ATTACK FORM CELL
 
 function attackFormCell(guess, correct) {
 if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
+return <div class="cell green">${guess}</div>;
 }
 
-return `<div class="cell gray">${guess}</div>`;
+return <div class="cell gray">${guess}</div>;
 }
 
 /* =========================
@@ -1301,7 +1271,7 @@ STAT CELL
 
 function statCell(guess, correct) {
 if (guess === correct) {
-return `<div class="cell green">${guess}</div>`;
+return <div class="cell green">${guess}</div>;
 }
 
 const difference = Math.abs(guess - correct) / correct;
@@ -1315,10 +1285,10 @@ arrow = " ↓";
 }
 
 if (difference <= 0.15) {
-return `<div class="cell yellow">${guess}${arrow}</div>`;
+return <div class="cell yellow">${guess}${arrow}</div>;
 }
 
-return `<div class="cell gray">${guess}${arrow}</div>`;
+return <div class="cell gray">${guess}${arrow}</div>;
 }
 
 /* =========================
@@ -1344,10 +1314,6 @@ alert("Skylander not found!");
 return;
 }
 
-/* SCORING: count every valid guess */
-guessCount++;
-updateScore();
-
 addGuessRow(guess);
 
 input.value = "";
@@ -1369,13 +1335,14 @@ document.getElementById("guessTableBody");
 const row =
 document.createElement("tr");
 
-row.innerHTML = ` <td>
+row.innerHTML = `
+<td>
 ${categoryCell(
 guess.name,
 correctSkylander.name
-)} </td>
+)}
+</td>
 
-```
 <td>
   ${elementCell(
     guess.element,
@@ -1424,7 +1391,6 @@ correctSkylander.name
     correctSkylander.armor
   )}
 </td>
-```
 
 `;
 
@@ -1436,10 +1402,8 @@ WIN MESSAGE
 ========================= */
 
 function showWin() {
-const score = getScore(guessCount);
-
 document.getElementById("winMessage").textContent =
-`🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
+🎉 Correct! The Skylander was ${correctSkylander.name}!;
 }
 
 /* =========================
@@ -1473,7 +1437,6 @@ matches.forEach(skylander => {
 const item =
 document.createElement("div");
 
-```
 item.className =
   "autocomplete-item";
 
@@ -1488,7 +1451,6 @@ item.addEventListener("click", () => {
 });
 
 autocomplete.appendChild(item);
-```
 
 });
 });
