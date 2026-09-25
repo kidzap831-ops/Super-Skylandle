@@ -1659,6 +1659,48 @@ guessInput.addEventListener("input", () => {
   });
 });
 
+
+/* =========================
+LEADERBOARD PANEL
+========================= */
+
+const leaderboardToggleButton = document.getElementById("leaderboardToggleButton");
+const leaderboardOverlay = document.getElementById("leaderboardOverlay");
+const closeLeaderboardButton = document.getElementById("closeLeaderboardButton");
+
+function openLeaderboard() {
+  leaderboardOverlay.classList.remove("hidden");
+  leaderboardToggleButton.setAttribute("aria-expanded", "true");
+  loadLeaderboard();
+}
+
+function closeLeaderboard() {
+  leaderboardOverlay.classList.add("hidden");
+  leaderboardToggleButton.setAttribute("aria-expanded", "false");
+}
+
+leaderboardToggleButton.addEventListener("click", () => {
+  if (leaderboardOverlay.classList.contains("hidden")) {
+    openLeaderboard();
+  } else {
+    closeLeaderboard();
+  }
+});
+
+closeLeaderboardButton.addEventListener("click", closeLeaderboard);
+
+leaderboardOverlay.addEventListener("click", event => {
+  if (event.target === leaderboardOverlay) {
+    closeLeaderboard();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !leaderboardOverlay.classList.contains("hidden")) {
+    closeLeaderboard();
+  }
+});
+
 /* =========================
 BUTTONS / START
 ========================= */

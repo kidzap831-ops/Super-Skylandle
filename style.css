@@ -357,3 +357,63 @@ LEADERBOARD
   text-align: center !important;
   color: #aeb5c7;
 }
+
+
+/* =========================
+POP-UP LEADERBOARD
+========================= */
+
+.leaderboard-card {
+  display: none;
+}
+
+.leaderboard-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 90;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(5, 7, 12, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 70px 16px 16px;
+}
+
+.leaderboard-panel {
+  width: min(680px, calc(100vw - 32px));
+  max-height: calc(100vh - 86px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid #3a4050;
+  border-radius: 16px;
+  background: #181b23;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-refresh {
+  margin: 0 0 12px;
+}
+
+@media (max-width: 600px) {
+  .leaderboard-toggle {
+    top: 10px;
+    left: 10px;
+  }
+
+  .leaderboard-overlay {
+    padding: 62px 10px 10px;
+  }
+
+  .leaderboard-panel {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 72px);
+  }
+}
