@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skylandle</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <main class="page">
@@ -44,11 +44,19 @@
     </section>
 
     <section class="scoreboard">
-      <div><span class="score-label">Current score</span><strong id="score">100</strong></div>
-      <div><span class="score-label">Guesses</span><strong id="guessCount">0</strong></div>
-      <div><span class="score-label">Total score</span><strong id="totalScore">0</strong></div>
+      <div>
+        <span class="score-label">Current score</span>
+        <strong id="score">100</strong>
+      </div>
+      <div>
+        <span class="score-label">Guesses</span>
+        <strong id="guessCount">0</strong>
+      </div>
+      <div>
+        <span class="score-label">Total score</span>
+        <strong id="totalScore">0</strong>
+      </div>
     </section>
-
 
     <button id="leaderboardToggleButton" class="leaderboard-toggle" type="button" aria-expanded="false">
       🏆 Leaderboard
@@ -61,12 +69,17 @@
             <h2 id="leaderboardTitle">🏆 Leaderboard</h2>
             <p class="muted">Top 50 players by total score</p>
           </div>
-          <button id="closeLeaderboardButton" type="button" class="secondary">✕ Close</button>
+
+          <button id="closeLeaderboardButton" type="button" class="secondary">
+            ✕ Close
+          </button>
         </div>
 
         <div id="yourRank" class="your-rank hidden"></div>
 
-        <button id="refreshLeaderboardButton" type="button" class="secondary leaderboard-refresh">Refresh</button>
+        <button id="refreshLeaderboardButton" type="button" class="secondary leaderboard-refresh">
+          Refresh
+        </button>
 
         <div class="leaderboard-table-wrap">
           <table class="leaderboard-table">
@@ -77,8 +90,13 @@
                 <th>Total Score</th>
               </tr>
             </thead>
+
             <tbody id="leaderboardBody">
-              <tr><td colspan="3" class="leaderboard-status">Log in to view the leaderboard.</td></tr>
+              <tr>
+                <td colspan="3" class="leaderboard-status">
+                  Log in to view the leaderboard.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -91,6 +109,7 @@
           <input id="guessInput" type="text" placeholder="Type a Skylander..." autocomplete="off">
           <div id="autocomplete" class="autocomplete"></div>
         </div>
+
         <button id="guessButton" type="button">Guess</button>
         <button id="newGameButton" type="button" class="secondary">New Game</button>
       </div>
@@ -111,37 +130,49 @@
               <th>Armor</th>
             </tr>
           </thead>
+
           <tbody id="guessTableBody"></tbody>
         </table>
       </div>
     </section>
 
+    <!-- LEVEL BUTTON -->
     <button id="levelToggleButton" class="level-toggle" type="button" aria-expanded="false">
       🎮 Level <span id="levelButtonNumber">4</span>
     </button>
 
+    <!-- LEVEL MENU -->
     <div id="levelOverlay" class="level-overlay hidden">
       <aside class="level-panel" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
+
         <div class="level-heading">
           <div>
             <h2 id="levelTitle">🎮 Choose Level</h2>
             <p class="muted">Choose which Skylanders games are included.</p>
           </div>
-          <button id="closeLevelButton" type="button" class="secondary">✕ Close</button>
+
+          <button id="closeLevelButton" type="button" class="secondary">
+            ✕ Close
+          </button>
         </div>
 
         <div class="level-options">
+
+          <!-- LEVEL 1 -->
           <button class="level-option" type="button" data-level="1">
             <span class="level-number">Level 1</span>
             <span class="multiplier-badge">1× points</span>
+
             <span class="game-path">
               <span class="game-badge active">Spyro's Adventure</span>
             </span>
           </button>
 
+          <!-- LEVEL 2 -->
           <button class="level-option" type="button" data-level="2">
             <span class="level-number">Level 2</span>
             <span class="multiplier-badge">1.10× points</span>
+
             <span class="game-path">
               <span class="game-badge active">Spyro's Adventure</span>
               <span class="game-plus">+</span>
@@ -149,9 +180,11 @@
             </span>
           </button>
 
+          <!-- LEVEL 3 -->
           <button class="level-option" type="button" data-level="3">
             <span class="level-number">Level 3</span>
             <span class="multiplier-badge">1.4× points</span>
+
             <span class="game-path">
               <span class="game-badge active">Spyro's Adventure</span>
               <span class="game-plus">+</span>
@@ -161,9 +194,11 @@
             </span>
           </button>
 
+          <!-- LEVEL 4 -->
           <button class="level-option selected" type="button" data-level="4">
             <span class="level-number">Level 4</span>
-            <span class="multiplier-badge">2.0× points</span>
+            <span class="multiplier-badge">2× points</span>
+
             <span class="game-path">
               <span class="game-badge active">Spyro's Adventure</span>
               <span class="game-plus">+</span>
@@ -174,15 +209,57 @@
               <span class="game-badge active">Trap Team</span>
             </span>
           </button>
+
+          <!-- LEVEL 5 -->
+          <button class="level-option" type="button" data-level="5">
+            <span class="level-number">Level 5</span>
+            <span class="multiplier-badge">2.5× points</span>
+
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Giants</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Swap Force</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Trap Team</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">SuperChargers</span>
+            </span>
+          </button>
+
+          <!-- LEVEL 6 -->
+          <button class="level-option" type="button" data-level="6">
+            <span class="level-number">Level 6</span>
+            <span class="multiplier-badge">3× points</span>
+
+            <span class="game-path">
+              <span class="game-badge active">Spyro's Adventure</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Giants</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Swap Force</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Trap Team</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">SuperChargers</span>
+              <span class="game-plus">+</span>
+              <span class="game-badge active">Imaginators</span>
+            </span>
+          </button>
+
         </div>
 
-        <p class="level-note">Changing level starts a new game. Your saved total score is not reset.</p>
+        <p class="level-note">
+          Changing level starts a new game. Your saved total score is not reset.
+        </p>
+
       </aside>
     </div>
 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=7"></script>
+  <script src="script.js?v=8"></script>
 </body>
 </html>
