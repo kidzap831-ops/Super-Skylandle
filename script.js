@@ -1481,16 +1481,16 @@ SCORING
 ========================= */
 
 function getScore(guesses) {
-  if (guesses === 1) return 100;
-  if (guesses === 2) return 50;
-  if (guesses === 3) return 28;
-  if (guesses === 4) return 17;
-  if (guesses === 5) return 10;
-  if (guesses === 6) return 7;
-  if (guesses === 7) return 5;
-  if (guesses === 8) return 4;
-  if (guesses === 9) return 3;
-  return 2;
+  if (guesses === 1) return 200;
+  if (guesses === 2) return 75;
+  if (guesses === 3) return 44;
+  if (guesses === 4) return 32;
+  if (guesses === 5) return 23;
+  if (guesses === 6) return 17;
+  if (guesses === 7) return 12;
+  if (guesses === 8) return 9;
+  if (guesses === 9) return 6;
+  return 5;
 }
 
 function updateScore() {
