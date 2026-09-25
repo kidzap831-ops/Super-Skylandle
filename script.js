@@ -1501,16 +1501,18 @@ SCORING
 ========================= */
 
 function getBaseScore(guesses) {
-  if (guesses === 1) return 100;
-    if (guesses === 2) return 50;
-    if (guesses === 3) return 28;
-    if (guesses === 4) return 17;
-    if (guesses === 5) return 10;
-    if (guesses === 6) return 7;
-    if (guesses === 7) return 5;
-    if (guesses === 8) return 4;
-    if (guesses === 9) return 3;
-    return 2;
+  if (guesses === 1) return 40;
+    if (guesses === 2) return 16;
+    if (guesses === 3) return 9;
+    if (guesses === 4) return 6.6;
+    if (guesses === 5) return 4.6;
+    if (guesses === 6) return 3.4;
+    if (guesses === 7) return 2,4;
+    if (guesses === 8) return 1.8;
+    if (guesses === 9) return 1.4;
+  if (guesses === 10) return 1.25;
+  if (guesses === 11) return 1.2;
+    return 1;
 }
 
 function getScore(guesses) {
