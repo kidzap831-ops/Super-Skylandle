@@ -1489,7 +1489,9 @@ function getScore(guesses) {
   if (guesses === 6) return 17;
   if (guesses === 7) return 12;
   if (guesses === 8) return 9;
-  if (guesses === 9) return 6;
+  if (guesses === 9) return 7;
+  if (guesses === 10) return 6;
+  if (guesses === 11) return 6;
   return 5;
 }
 
