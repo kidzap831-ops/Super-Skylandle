@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,72 +12,88 @@
 
   <div class="container">
 
-    <h1>Skylandle</h1>
-    <p class="subtitle">Guess the mystery Skylander!</p>
+```
+<h1>Skylandle</h1>
+<p class="subtitle">Guess the mystery Skylander!</p>
 
-    <div class="game-controls">
-      <input
-        type="text"
-        id="guessInput"
-        placeholder="Enter a Skylander..."
-        autocomplete="off"
-      >
-      <button id="guessButton">Guess</button>
-      <button id="newGameButton">New Game</button>
-    </div>
+<div class="score-board">
+  <div class="score-box">
+    <span class="score-label">Score</span>
+    <span id="score">100</span>
+  </div>
 
-    <div id="autocomplete" class="autocomplete"></div>
+  <div class="score-box">
+    <span class="score-label">Guesses</span>
+    <span id="guessCount">0</span>
+  </div>
+</div>
 
-    <div id="winMessage" class="win-message"></div>
+<div class="game-controls">
+  <input
+    type="text"
+    id="guessInput"
+    placeholder="Enter a Skylander..."
+    autocomplete="off"
+  >
 
-    <div class="table-wrapper">
-      <table id="guessTable">
-        <thead>
-          <tr>
-            <th>Skylander</th>
-            <th>Element</th>
-            <th>Game</th>
-            <th>Attack Form</th>
-            <th>Color</th>
-            <th>Health</th>
-            <th>Speed</th>
-            <th>Armor</th>
-          </tr>
-        </thead>
+  <button id="guessButton">Guess</button>
+  <button id="newGameButton">New Game</button>
+</div>
 
-        <tbody id="guessTableBody"></tbody>
-      </table>
-    </div>
+<div id="autocomplete" class="autocomplete"></div>
 
-    <div class="legend">
-      <div>
-        <span class="legend-box green"></span>
-        Correct
-      </div>
+<div id="winMessage" class="win-message"></div>
 
-      <div>
-        <span class="legend-box yellow"></span>
-        Close / Related
-      </div>
+<div class="table-wrapper">
+  <table id="guessTable">
+    <thead>
+      <tr>
+        <th>Skylander</th>
+        <th>Element</th>
+        <th>Game</th>
+        <th>Attack Form</th>
+        <th>Color</th>
+        <th>Health</th>
+        <th>Speed</th>
+        <th>Armor</th>
+      </tr>
+    </thead>
 
-      <div>
-        <span class="legend-box gray"></span>
-        Incorrect
-      </div>
+    <tbody id="guessTableBody"></tbody>
+  </table>
+</div>
 
-      <div>
-        <span>↑</span>
-        Too low
-      </div>
+<div class="legend">
+  <div>
+    <span class="legend-box green"></span>
+    Correct
+  </div>
 
-      <div>
-        <span>↓</span>
-        Too high
-      </div>
-    </div>
+  <div>
+    <span class="legend-box yellow"></span>
+    Close / Related
+  </div>
+
+  <div>
+    <span class="legend-box gray"></span>
+    Incorrect
+  </div>
+
+  <div>
+    <span>↑</span>
+    Too low
+  </div>
+
+  <div>
+    <span>↓</span>
+    Too high
+  </div>
+</div>
+```
 
   </div>
 
   <script src="script.js"></script>
+
 </body>
 </html>
