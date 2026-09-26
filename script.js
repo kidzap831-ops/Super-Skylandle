@@ -806,7 +806,7 @@ armor: 30
 },
 {
 name: "Star Strike",
-element: "Megic",
+element: "Magic",
 game: "Swap Force",
 gimmick: "Core",
 attackForm: "Sorcery",
@@ -2424,5 +2424,221 @@ window.addEventListener("load", () => {
     button.style.position = "fixed";
     button.style.top = "16px";
     button.style.left = "16px";
+  }
+});
+
+/* =========================
+DAILY SKYLANDLE
+========================= */
+
+const dailyToggleButton = document.getElementById("dailyToggleButton");
+const dailyOverlay = document.getElementById("dailyOverlay");
+const closeDailyButton = document.getElementById("closeDailyButton");
+const dailyChooser = document.getElementById("dailyChooser");
+const dailyGame = document.getElementById("dailyGame");
+const dailyLoginNote = document.getElementById("dailyLoginNote");
+const dailyModeName = document.getElementById("dailyModeName");
+const dailyGuessCounter = document.getElementById("dailyGuessCounter");
+const dailyRewardPreview = document.getElementById("dailyRewardPreview");
+const dailyGuessInput = document.getElementById("dailyGuessInput");
+const dailyAutocomplete = document.getElementById("dailyAutocomplete");
+const dailyGuessButton = document.getElementById("dailyGuessButton");
+const dailyMessage = document.getElementById("dailyMessage");
+const dailyGuessTableBody = document.getElementById("dailyGuessTableBody");
+const dailyOptions = document.querySelectorAll(".daily-option");
+
+const dailyNames = { 1: "Normal", 2: "Hard", 3: "Extreme" };
+const dailyBaseRewards = { 1: 30, 2: 75, 3: 150 };
+let activeDailyNumber = null;
+let activeDailyToken = null; // Deliberately memory-only: refreshing loses access to the Daily.
+let activeDailyFinished = false;
+
+function highestUnlockedMultiplier() {
+  return levelMultipliers[getHighestUnlockedLevel()];
+}
+
+function dailyRewardEstimate(number) {
+  return Math.floor(dailyBaseRewards[number] * highestUnlockedMultiplier());
+}
+
+function openDailyMenu() {
+  dailyOverlay.classList.remove("hidden");
+  dailyToggleButton.setAttribute("aria-expanded", "true");
+  dailyLoginNote.classList.toggle("hidden", !!currentUser);
+  dailyOptions.forEach(button => button.disabled = !currentUser);
+}
+
+function closeDailyMenu() {
+  if (activeDailyToken && !activeDailyFinished) {
+    const leave = confirm("Leaving now will lock this Daily puzzle until the next 18:00 reset. Leave anyway?");
+    if (!leave) return;
+  }
+  dailyOverlay.classList.add("hidden");
+  dailyToggleButton.setAttribute("aria-expanded", "false");
+  if (activeDailyToken && !activeDailyFinished) {
+    activeDailyToken = null;
+    activeDailyNumber = null;
+    showDailyChooser();
+  }
+}
+
+function showDailyChooser() {
+  dailyChooser.classList.remove("hidden");
+  dailyGame.classList.add("hidden");
+  dailyGuessTableBody.innerHTML = "";
+  dailyMessage.textContent = "";
+  dailyGuessInput.value = "";
+  dailyAutocomplete.innerHTML = "";
+}
+
+async function startDaily(number) {
+  if (!currentUser) {
+    dailyLoginNote.classList.remove("hidden");
+    return;
+  }
+
+  dailyOptions.forEach(button => button.disabled = true);
+  const { data: result, error } = await supabaseClient.rpc("start_daily_puzzle", {
+    p_puzzle_number: number
+  });
+  dailyOptions.forEach(button => button.disabled = false);
+
+  if (error) {
+    dailyMessage.textContent = "";
+    alert(error.message.includes("cannot be reopened")
+      ? "That Daily is already used or locked until the next 18:00 reset."
+      : error.message);
+    return;
+  }
+
+  const row = Array.isArray(result) ? result[0] : result;
+  activeDailyNumber = number;
+  activeDailyToken = row.session_token;
+  activeDailyFinished = false;
+
+  dailyChooser.classList.add("hidden");
+  dailyGame.classList.remove("hidden");
+  dailyModeName.textContent = dailyNames[number];
+  dailyGuessCounter.textContent = `${Number(row.guess_count || 0)} / 8 guesses`;
+  dailyRewardPreview.textContent = `${dailyRewardEstimate(number)} points if correct`;
+  dailyGuessTableBody.innerHTML = "";
+  dailyMessage.textContent = "";
+  dailyGuessInput.disabled = false;
+  dailyGuessButton.disabled = false;
+  dailyGuessInput.focus();
+}
+
+function dailyCategoryCell(info) {
+  if (!info) return `<div class="cell daily-hidden-cell">—</div>`;
+  return `<div class="cell ${info.match ? "green" : "gray"}">${info.value}</div>`;
+}
+
+function dailyStatCell(info) {
+  if (!info) return `<div class="cell daily-hidden-cell">—</div>`;
+  let arrow = "";
+  if (!info.match && info.direction === "higher") arrow = " ↑";
+  if (!info.match && info.direction === "lower") arrow = " ↓";
+  return `<div class="cell ${info.match ? "green" : "gray"}">${info.value}${arrow}</div>`;
+}
+
+function addDailyGuessRow(guess, result) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><div class="cell ${result.correct ? "green" : "gray"}">${guess.name}</div></td>
+    <td>${dailyCategoryCell(result.element)}</td>
+    <td>${dailyCategoryCell(result.game)}</td>
+    <td>${dailyCategoryCell(result.gimmick)}</td>
+    <td>${dailyCategoryCell(result.attack_form)}</td>
+    <td>${dailyCategoryCell(result.color)}</td>
+    <td>${dailyStatCell(result.health)}</td>
+    <td>${dailyStatCell(result.speed)}</td>
+    <td>${dailyStatCell(result.armor)}</td>`;
+  dailyGuessTableBody.prepend(row);
+}
+
+async function makeDailyGuess() {
+  if (!activeDailyToken || activeDailyFinished) return;
+
+  const name = dailyGuessInput.value.trim();
+  const guess = data.find(s => s.name.toLowerCase() === name.toLowerCase());
+  if (!guess) {
+    alert("Skylander not found!");
+    return;
+  }
+
+  dailyGuessButton.disabled = true;
+  dailyGuessInput.disabled = true;
+
+  const { data: result, error } = await supabaseClient.rpc("submit_daily_guess", {
+    p_puzzle_number: activeDailyNumber,
+    p_session_token: activeDailyToken,
+    p_guess_name: guess.name
+  });
+
+  if (error) {
+    dailyGuessButton.disabled = false;
+    dailyGuessInput.disabled = false;
+    alert(error.message);
+    return;
+  }
+
+  addDailyGuessRow(guess, result);
+  dailyGuessCounter.textContent = `${result.guess_count} / 8 guesses`;
+  dailyGuessInput.value = "";
+  dailyAutocomplete.innerHTML = "";
+
+  if (result.finished) {
+    activeDailyFinished = true;
+    dailyGuessButton.disabled = true;
+    dailyGuessInput.disabled = true;
+
+    if (result.correct) {
+      dailyMessage.textContent = `🎉 Correct! The Skylander was ${result.answer}! You earned ${Number(result.score_awarded || 0)} points!`;
+      await loadProfile();
+      await loadLeaderboard();
+    } else {
+      dailyMessage.textContent = `The Skylander was ${result.answer}. No points this time.`;
+    }
+  } else {
+    dailyGuessButton.disabled = false;
+    dailyGuessInput.disabled = false;
+    dailyGuessInput.focus();
+  }
+}
+
+dailyGuessInput.addEventListener("input", () => {
+  if (!activeDailyToken || activeDailyFinished) return;
+  const value = dailyGuessInput.value.toLowerCase().trim();
+  dailyAutocomplete.innerHTML = "";
+  if (!value) return;
+
+  data.filter(s => s.name.toLowerCase().includes(value)).slice(0, 12).forEach(s => {
+    const item = document.createElement("div");
+    item.className = "autocomplete-item";
+    item.textContent = s.name;
+    item.addEventListener("click", () => {
+      dailyGuessInput.value = s.name;
+      dailyAutocomplete.innerHTML = "";
+    });
+    dailyAutocomplete.appendChild(item);
+  });
+});
+
+dailyToggleButton.addEventListener("click", openDailyMenu);
+closeDailyButton.addEventListener("click", closeDailyMenu);
+dailyOptions.forEach(button => button.addEventListener("click", () => startDaily(Number(button.dataset.daily))));
+dailyGuessButton.addEventListener("click", makeDailyGuess);
+dailyGuessInput.addEventListener("keydown", event => { if (event.key === "Enter") makeDailyGuess(); });
+
+dailyOverlay.addEventListener("click", event => {
+  if (event.target === dailyOverlay) closeDailyMenu();
+});
+
+// If the player logs out during an unfinished Daily, the in-memory token is discarded.
+supabaseClient.auth.onAuthStateChange(event => {
+  if (event === "SIGNED_OUT" && activeDailyToken && !activeDailyFinished) {
+    activeDailyToken = null;
+    activeDailyNumber = null;
+    showDailyChooser();
   }
 });

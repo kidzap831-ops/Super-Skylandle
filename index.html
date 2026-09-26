@@ -4,42 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skylandle</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <main class="page">
-    <header class="hero">
-      <h1>SKYLANDLE</h1>
-      <p>Guess the mystery Skylander!</p>
-    </header>
+    <header class="hero"><h1>SKYLANDLE</h1><p>Guess the mystery Skylander!</p></header>
 
     <section class="account-card">
       <div id="loggedOutView">
-        <h2>Account</h2>
-        <p class="muted">Log in to save your total score between visits.</p>
-
+        <h2>Account</h2><p class="muted">Log in to save your total score between visits.</p>
         <div class="account-grid">
           <input id="usernameInput" type="text" maxlength="24" placeholder="Username" autocomplete="username">
           <input id="emailInput" type="email" placeholder="Email" autocomplete="email">
           <input id="passwordInput" type="password" minlength="8" placeholder="Password (8+ characters)" autocomplete="current-password">
         </div>
-
-        <div class="account-buttons">
-          <button id="signUpButton" type="button">Create Account</button>
-          <button id="loginButton" type="button">Log In</button>
-        </div>
+        <div class="account-buttons"><button id="signUpButton" type="button">Create Account</button><button id="loginButton" type="button">Log In</button></div>
       </div>
-
-      <div id="loggedInView" class="hidden">
-        <div class="logged-in-row">
-          <div>
-            <div class="muted">Logged in as</div>
-            <strong id="accountUsername">Player</strong>
-          </div>
-          <button id="logoutButton" type="button" class="secondary">Log Out</button>
-        </div>
-      </div>
-
+      <div id="loggedInView" class="hidden"><div class="logged-in-row"><div><div class="muted">Logged in as</div><strong id="accountUsername">Player</strong></div><button id="logoutButton" type="button" class="secondary">Log Out</button></div></div>
       <p id="authMessage" class="auth-message" aria-live="polite"></p>
     </section>
 
@@ -49,181 +30,63 @@
       <div><span class="score-label">Total score</span><strong id="totalScore">0</strong></div>
     </section>
 
-
-    <button id="leaderboardToggleButton" class="leaderboard-toggle" type="button" aria-expanded="false">
-      🏆 Leaderboard
-    </button>
+    <button id="leaderboardToggleButton" class="leaderboard-toggle" type="button" aria-expanded="false">🏆 Leaderboard</button>
+    <button id="dailyToggleButton" class="daily-toggle" type="button" aria-expanded="false">☀️ Daily</button>
 
     <div id="leaderboardOverlay" class="leaderboard-overlay hidden">
       <aside class="leaderboard-panel" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
-        <div class="leaderboard-heading">
-          <div>
-            <h2 id="leaderboardTitle">🏆 Leaderboard</h2>
-            <p class="muted">Top 50 players by total score</p>
+        <div class="leaderboard-heading"><div><h2 id="leaderboardTitle">🏆 Leaderboard</h2><p class="muted">Top 50 players by total score</p></div><button id="closeLeaderboardButton" type="button" class="secondary">✕ Close</button></div>
+        <div id="yourRank" class="your-rank hidden"></div>
+        <button id="refreshLeaderboardButton" type="button" class="secondary leaderboard-refresh">Refresh</button>
+        <div class="leaderboard-table-wrap"><table class="leaderboard-table"><thead><tr><th>Rank</th><th>Username</th><th>Total Score</th></tr></thead><tbody id="leaderboardBody"><tr><td colspan="3" class="leaderboard-status">Log in to view the leaderboard.</td></tr></tbody></table></div>
+      </aside>
+    </div>
+
+    <div id="dailyOverlay" class="daily-overlay hidden">
+      <aside class="daily-panel" role="dialog" aria-modal="true" aria-labelledby="dailyTitle">
+        <div class="daily-heading"><div><h2 id="dailyTitle">☀️ Daily Skylandle</h2><p class="muted">Three puzzles reset every day at 18:00 Copenhagen time.</p></div><button id="closeDailyButton" type="button" class="secondary">✕ Close</button></div>
+        <div id="dailyChooser">
+          <p id="dailyLoginNote" class="daily-note">You must be logged in to play Daily puzzles.</p>
+          <div class="daily-options">
+            <button class="daily-option" type="button" data-daily="1"><strong>Normal</strong><span>All 8 categories</span><span class="daily-reward">30 base points</span></button>
+            <button class="daily-option" type="button" data-daily="2"><strong>Hard</strong><span>6 random categories per guess</span><span class="daily-reward">75 base points</span></button>
+            <button class="daily-option" type="button" data-daily="3"><strong>Extreme</strong><span>4 random categories per guess</span><span class="daily-reward">150 base points</span></button>
           </div>
-          <button id="closeLeaderboardButton" type="button" class="secondary">✕ Close</button>
+          <p class="daily-warning">You get 8 guesses. Once a Daily starts, refreshing, closing, logging out, or leaving it locks that puzzle until the next reset.</p>
         </div>
 
-        <div id="yourRank" class="your-rank hidden"></div>
-
-        <button id="refreshLeaderboardButton" type="button" class="secondary leaderboard-refresh">Refresh</button>
-
-        <div class="leaderboard-table-wrap">
-          <table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Total Score</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboardBody">
-              <tr><td colspan="3" class="leaderboard-status">Log in to view the leaderboard.</td></tr>
-            </tbody>
-          </table>
+        <div id="dailyGame" class="hidden">
+          <div class="daily-game-bar"><div><strong id="dailyModeName">Normal</strong><span id="dailyGuessCounter">0 / 8 guesses</span></div><span id="dailyRewardPreview" class="multiplier-badge"></span></div>
+          <div class="guess-area">
+            <div class="autocomplete-wrap"><input id="dailyGuessInput" type="text" placeholder="Type any Skylander..." autocomplete="off"><div id="dailyAutocomplete" class="autocomplete"></div></div>
+            <button id="dailyGuessButton" type="button">Guess</button>
+          </div>
+          <div id="dailyMessage" class="win-message" aria-live="polite"></div>
+          <div class="table-wrap"><table><thead><tr><th>Skylander</th><th>Element</th><th>Game</th><th>Gimmick</th><th>Attack Form</th><th>Color</th><th>Health</th><th>Speed</th><th>Armor</th></tr></thead><tbody id="dailyGuessTableBody"></tbody></table></div>
         </div>
       </aside>
     </div>
 
     <section class="game-card">
-      <div class="guess-area">
-        <div class="autocomplete-wrap">
-          <input id="guessInput" type="text" placeholder="Type a Skylander..." autocomplete="off">
-          <div id="autocomplete" class="autocomplete"></div>
-        </div>
-        <button id="guessButton" type="button">Guess</button>
-        <button id="newGameButton" type="button" class="secondary">New Game</button>
-      </div>
-
+      <div class="guess-area"><div class="autocomplete-wrap"><input id="guessInput" type="text" placeholder="Type a Skylander..." autocomplete="off"><div id="autocomplete" class="autocomplete"></div></div><button id="guessButton" type="button">Guess</button><button id="newGameButton" type="button" class="secondary">New Game</button></div>
       <div id="winMessage" class="win-message" aria-live="polite"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Skylander</th>
-              <th>Element</th>
-              <th>Game</th>
-              <th>Gimmick</th>
-              <th>Attack Form</th>
-              <th>Color</th>
-              <th>Health</th>
-              <th>Speed</th>
-              <th>Armor</th>
-            </tr>
-          </thead>
-          <tbody id="guessTableBody"></tbody>
-        </table>
-      </div>
+      <div class="table-wrap"><table><thead><tr><th>Skylander</th><th>Element</th><th>Game</th><th>Gimmick</th><th>Attack Form</th><th>Color</th><th>Health</th><th>Speed</th><th>Armor</th></tr></thead><tbody id="guessTableBody"></tbody></table></div>
     </section>
 
-    <button id="levelToggleButton" class="level-toggle" type="button" aria-expanded="false">
-      🎮 Level <span id="levelButtonNumber">4</span>
-    </button>
-
-    <div id="levelOverlay" class="level-overlay hidden">
-      <aside class="level-panel" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
-        <div class="level-heading">
-          <div>
-            <h2 id="levelTitle">🎮 Choose Level</h2>
-            <p class="muted">Choose which Skylanders games are included.</p>
-          </div>
-          <button id="closeLevelButton" type="button" class="secondary">✕ Close</button>
-        </div>
-
-        <div class="level-options">
-          <button class="level-option" type="button" data-level="1">
-            <span class="level-number">Level 1</span>
-            <span class="multiplier-badge">1× points</span>
-            <span class="level-requirement">Unlocked</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-            </span>
-          </button>
-
-          <button class="level-option" type="button" data-level="2">
-            <span class="level-number">Level 2</span>
-            <span class="multiplier-badge">1.10× points</span>
-            <span class="level-requirement">🔒 Requires 100 total points</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Giants</span>
-            </span>
-          </button>
-
-          <button class="level-option" type="button" data-level="3">
-            <span class="level-number">Level 3</span>
-            <span class="multiplier-badge">1.4× points</span>
-            <span class="level-requirement">🔒 Requires 500 total points</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Giants</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Swap Force</span>
-            </span>
-          </button>
-
-          <button class="level-option selected" type="button" data-level="4">
-            <span class="level-number">Level 4</span>
-            <span class="multiplier-badge">2.0× points</span>
-            <span class="level-requirement">🔒 Requires 2,000 total points</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Giants</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Swap Force</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Trap Team</span>
-            </span>
-          </button>
-
-          <button class="level-option" type="button" data-level="5">
-            <span class="level-number">Level 5</span>
-            <span class="multiplier-badge">3× points</span>
-            <span class="level-requirement">🔒 Requires 5,000 total points</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Giants</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Swap Force</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Trap Team</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">SuperChargers</span>
-            </span>
-          </button>
-
-          <button class="level-option" type="button" data-level="6">
-            <span class="level-number">Level 6</span>
-            <span class="multiplier-badge">5× points</span>
-            <span class="level-requirement">🔒 Requires 10,000 total points</span>
-            <span class="game-path">
-              <span class="game-badge active">Spyro's Adventure</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Giants</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Swap Force</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Trap Team</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">SuperChargers</span>
-              <span class="game-plus">+</span>
-              <span class="game-badge active">Imaginators</span>
-            </span>
-          </button>
-        </div>
-
-        <p class="level-note">Changing level starts a new game. Your saved total score is not reset.</p>
-      </aside>
-    </div>
-
+    <button id="levelToggleButton" class="level-toggle" type="button" aria-expanded="false">🎮 Level <span id="levelButtonNumber">1</span></button>
+    <div id="levelOverlay" class="level-overlay hidden"><aside class="level-panel" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
+      <div class="level-heading"><div><h2 id="levelTitle">🎮 Choose Level</h2><p class="muted">Choose which Skylanders games are included.</p></div><button id="closeLevelButton" type="button" class="secondary">✕ Close</button></div>
+      <div class="level-options">
+        <button class="level-option" type="button" data-level="1"><span class="level-number">Level 1</span><span class="multiplier-badge">1× points</span><span class="level-requirement">Unlocked</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span></span></button>
+        <button class="level-option" type="button" data-level="2"><span class="level-number">Level 2</span><span class="multiplier-badge">1.10× points</span><span class="level-requirement">🔒 Requires 100 total points</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span><span class="game-plus">+</span><span class="game-badge active">Giants</span></span></button>
+        <button class="level-option" type="button" data-level="3"><span class="level-number">Level 3</span><span class="multiplier-badge">1.4× points</span><span class="level-requirement">🔒 Requires 500 total points</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span><span class="game-plus">+</span><span class="game-badge active">Giants</span><span class="game-plus">+</span><span class="game-badge active">Swap Force</span></span></button>
+        <button class="level-option" type="button" data-level="4"><span class="level-number">Level 4</span><span class="multiplier-badge">2.0× points</span><span class="level-requirement">🔒 Requires 2,000 total points</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span><span class="game-plus">+</span><span class="game-badge active">Giants</span><span class="game-plus">+</span><span class="game-badge active">Swap Force</span><span class="game-plus">+</span><span class="game-badge active">Trap Team</span></span></button>
+        <button class="level-option" type="button" data-level="5"><span class="level-number">Level 5</span><span class="multiplier-badge">3× points</span><span class="level-requirement">🔒 Requires 5,000 total points</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span><span class="game-plus">+</span><span class="game-badge active">Giants</span><span class="game-plus">+</span><span class="game-badge active">Swap Force</span><span class="game-plus">+</span><span class="game-badge active">Trap Team</span><span class="game-plus">+</span><span class="game-badge active">SuperChargers</span></span></button>
+        <button class="level-option" type="button" data-level="6"><span class="level-number">Level 6</span><span class="multiplier-badge">5× points</span><span class="level-requirement">🔒 Requires 10,000 total points</span><span class="game-path"><span class="game-badge active">Spyro's Adventure</span><span class="game-plus">+</span><span class="game-badge active">Giants</span><span class="game-plus">+</span><span class="game-badge active">Swap Force</span><span class="game-plus">+</span><span class="game-badge active">Trap Team</span><span class="game-plus">+</span><span class="game-badge active">SuperChargers</span><span class="game-plus">+</span><span class="game-badge active">Imaginators</span></span></button>
+      </div><p class="level-note">Changing level starts a new game. Your saved total score is not reset.</p>
+    </aside></div>
   </main>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=11"></script>
+  <script src="script.js?v=12"></script>
 </body>
 </html>
