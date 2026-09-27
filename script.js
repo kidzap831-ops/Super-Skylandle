@@ -1684,6 +1684,8 @@ let guessCount = 0;
 let totalScore = 0;
 let gameOver = false;
 let currentLevel = Number(localStorage.getItem("skylandleLevel")) || 1;
+let favoriteElement = null;
+let favoriteSkylander = null;
 
 const ROUND_COOLDOWN_SECONDS = 60;
 let cooldownEndTime = 0;
@@ -1776,7 +1778,7 @@ async function loadProfile() {
 
   const { data: profile, error } = await supabaseClient
     .from("profiles")
-    .select("username, score, total_score")
+    .select("username, score, total_score, favorite_element, favorite_skylander")
     .eq("id", currentUser.id)
     .single();
 
@@ -1787,11 +1789,15 @@ async function loadProfile() {
   }
 
   totalScore = Number(profile.total_score) || 0;
+  favoriteElement = profile.favorite_element || null;
+  favoriteSkylander = profile.favorite_skylander || null;
   accountUsername.textContent =
     profile.username || currentUser.email || "Player";
 
   updateScore();
   enforceUnlockedLevel();
+  await enforceFavoriteForCurrentLevel();
+  renderFavorites();
 }
 
 async function refreshAccount(session) {
@@ -2210,21 +2216,49 @@ WIN
 ========================= */
 
 async function showWin() {
-  const score = getScore(guessCount);
-  totalScore += score;
   gameOver = true;
   updateLevelUI();
   stopRoundCooldown();
-
-  document.getElementById("winMessage").textContent =
-    `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
-
   document.getElementById("guessInput").disabled = true;
   document.getElementById("guessButton").disabled = true;
   document.getElementById("autocomplete").innerHTML = "";
 
+  if (currentUser) {
+    const { data: result, error } = await supabaseClient.rpc("award_normal_game", {
+      p_skylander_name: correctSkylander.name,
+      p_guesses: guessCount,
+      p_level: currentLevel
+    });
+    if (error) {
+      console.error("Could not award normal-game score:", error);
+      document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}, but the score could not be awarded.`;
+      setAuthMessage("The game was won, but the score could not be saved.", true);
+      return;
+    }
+    const base = Number(result.base_points) || 0;
+    const elementBonus = Number(result.element_bonus) || 0;
+    const skylanderBonus = Number(result.skylander_bonus) || 0;
+    const favoriteBonus = elementBonus + skylanderBonus;
+    const awarded = Number(result.points_awarded) || base;
+    totalScore = Number(result.total_score) || totalScore;
+    let bonusText = "";
+    if (favoriteBonus > 0) {
+      const parts = [];
+      if (elementBonus > 0) parts.push(`+${elementBonus} favorite element`);
+      if (skylanderBonus > 0) parts.push(`+${skylanderBonus} favorite Skylander`);
+      bonusText = ` (${base} base, ${parts.join(", ")})`;
+    }
+    document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${awarded} points${bonusText}!`;
+    updateScore();
+    enforceUnlockedLevel();
+    await loadLeaderboard();
+    return;
+  }
+
+  const score = getScore(guessCount);
+  totalScore += score;
+  document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
   updateScore();
-  await saveScore(score);
 }
 
 /* =========================
@@ -2305,6 +2339,49 @@ document.addEventListener("keydown", event => {
 
 
 /* =========================
+FAVORITES
+========================= */
+const favoritesToggleButton = document.getElementById("favoritesToggleButton");
+const favoritesOverlay = document.getElementById("favoritesOverlay");
+const closeFavoritesButton = document.getElementById("closeFavoritesButton");
+const favoriteElementSelect = document.getElementById("favoriteElementSelect");
+const favoriteSkylanderSelect = document.getElementById("favoriteSkylanderSelect");
+const favoriteStatus = document.getElementById("favoriteStatus");
+const gameUnlockLevel = {"Spyro's Adventure":1,"Giants":2,"Swap Force":3,"Trap Team":4,"SuperChargers":5,"Imaginators":6};
+function getSkylanderUnlockLevel(s){return gameUnlockLevel[s.game]||6;}
+function setFavoriteStatus(message,isError=false){favoriteStatus.textContent=message;favoriteStatus.classList.toggle("error",isError);}
+function renderFavorites(){
+  const elements=[...new Set(data.map(s=>s.element))].sort();
+  favoriteElementSelect.innerHTML='<option value="">None selected</option>'+elements.map(e=>`<option value="${e}">${e}</option>`).join("");
+  favoriteElementSelect.value=favoriteElement||"";
+  if(!favoriteElement){favoriteSkylanderSelect.innerHTML='<option value="">None selected</option>';favoriteSkylanderSelect.disabled=true;return;}
+  const choices=data.filter(s=>s.element===favoriteElement).sort((a,b)=>a.name.localeCompare(b.name));
+  favoriteSkylanderSelect.innerHTML='<option value="">None selected</option>'+choices.map(s=>{const l=getSkylanderUnlockLevel(s),locked=l>currentLevel,label=locked?`🔒 ${s.name} — Level ${l}`:s.name;return `<option value="${s.name}" ${locked?"disabled":""}>${label}</option>`;}).join("");
+  favoriteSkylanderSelect.disabled=false;
+  const ok=choices.some(s=>s.name===favoriteSkylander&&getSkylanderUnlockLevel(s)<=currentLevel);
+  favoriteSkylanderSelect.value=ok?favoriteSkylander:"";
+}
+async function saveFavorites(){
+  if(!currentUser){setFavoriteStatus("Log in to save favorites.",true);return false;}
+  const {error}=await supabaseClient.rpc("set_favorites",{p_element:favoriteElement,p_skylander:favoriteSkylander});
+  if(error){console.error("Could not save favorites:",error);setFavoriteStatus(error.message||"Could not save favorites.",true);return false;}
+  setFavoriteStatus("Favorites saved!");return true;
+}
+async function enforceFavoriteForCurrentLevel(){
+  if(!favoriteSkylander)return;
+  const selected=data.find(s=>s.name===favoriteSkylander);
+  if(!selected||getSkylanderUnlockLevel(selected)>currentLevel){favoriteSkylander=null;if(currentUser)await saveFavorites();}
+}
+function openFavoritesMenu(){renderFavorites();setFavoriteStatus(currentUser?"":"Log in to save favorites.",!currentUser);favoritesOverlay.classList.remove("hidden");favoritesToggleButton.setAttribute("aria-expanded","true");}
+function closeFavoritesMenu(){favoritesOverlay.classList.add("hidden");favoritesToggleButton.setAttribute("aria-expanded","false");}
+favoritesToggleButton.addEventListener("click",()=>favoritesOverlay.classList.contains("hidden")?openFavoritesMenu():closeFavoritesMenu());
+closeFavoritesButton.addEventListener("click",closeFavoritesMenu);
+favoritesOverlay.addEventListener("click",e=>{if(e.target===favoritesOverlay)closeFavoritesMenu();});
+favoriteElementSelect.addEventListener("change",async()=>{favoriteElement=favoriteElementSelect.value||null;favoriteSkylander=null;renderFavorites();await saveFavorites();});
+favoriteSkylanderSelect.addEventListener("change",async()=>{favoriteSkylander=favoriteSkylanderSelect.value||null;await saveFavorites();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!favoritesOverlay.classList.contains("hidden"))closeFavoritesMenu();});
+
+/* =========================
 LEVEL MENU
 ========================= */
 
@@ -2373,6 +2450,7 @@ levelOptions.forEach(option => {
     localStorage.setItem("skylandleLevel", currentLevel);
     updateLevelUI();
     closeLevelMenu();
+    enforceFavoriteForCurrentLevel().then(() => renderFavorites());
     startGame();
   });
 });

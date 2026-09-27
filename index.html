@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skylandle</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <main class="page">
@@ -73,6 +73,17 @@
       <div class="table-wrap"><table><thead><tr><th>Skylander</th><th>Element</th><th>Game</th><th>Gimmick</th><th>Attack Form</th><th>Color</th><th>Health</th><th>Speed</th><th>Armor</th></tr></thead><tbody id="guessTableBody"></tbody></table></div>
     </section>
 
+    <button id="favoritesToggleButton" class="favorites-toggle" type="button" aria-expanded="false">⭐ Favorites</button>
+    <div id="favoritesOverlay" class="favorites-overlay hidden"><aside class="favorites-panel" role="dialog" aria-modal="true" aria-labelledby="favoritesTitle">
+      <div class="favorites-heading"><div><h2 id="favoritesTitle">⭐ Favorites</h2><p class="muted">Choose your favorite element and Skylander.</p></div><button id="closeFavoritesButton" type="button" class="secondary">✕ Close</button></div>
+      <label class="favorite-label" for="favoriteElementSelect">Favorite Element</label>
+      <select id="favoriteElementSelect" class="favorite-select"><option value="">None selected</option></select>
+      <label class="favorite-label" for="favoriteSkylanderSelect">Favorite Skylander</label>
+      <select id="favoriteSkylanderSelect" class="favorite-select" disabled><option value="">None selected</option></select>
+      <p id="favoriteStatus" class="favorite-status" aria-live="polite"></p>
+      <p class="favorite-bonus-note"><strong>Normal games only.</strong> Matching your favorite element gives +5%. If the answer is also your favorite Skylander, you get another +15% (+20% total).</p>
+    </aside></div>
+
     <button id="levelToggleButton" class="level-toggle" type="button" aria-expanded="false">🎮 Level <span id="levelButtonNumber">1</span></button>
     <div id="levelOverlay" class="level-overlay hidden"><aside class="level-panel" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
       <div class="level-heading"><div><h2 id="levelTitle">🎮 Choose Level</h2><p class="muted">Choose which Skylanders games are included.</p></div><button id="closeLevelButton" type="button" class="secondary">✕ Close</button></div>
@@ -87,6 +98,6 @@
     </aside></div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=12"></script>
+  <script src="script.js?v=13"></script>
 </body>
 </html>
