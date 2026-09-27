@@ -2446,12 +2446,17 @@ const dailyGuessButton = document.getElementById("dailyGuessButton");
 const dailyMessage = document.getElementById("dailyMessage");
 const dailyGuessTableBody = document.getElementById("dailyGuessTableBody");
 const dailyOptions = document.querySelectorAll(".daily-option");
+const dailyBackButton = document.getElementById("dailyBackButton");
+const dailyResetTimer = document.getElementById("dailyResetTimer");
 
 const dailyNames = { 1: "Normal", 2: "Hard", 3: "Extreme" };
-const dailyBaseRewards = { 1: 30, 2: 75, 3: 150 };
+const dailyBaseRewards = { 1: 30, 2: 60, 3: 120 };
 let activeDailyNumber = null;
 let activeDailyToken = null; // Deliberately memory-only: refreshing loses access to the Daily.
 let activeDailyFinished = false;
+let dailyStatusByNumber = {};
+let dailyResetAt = null;
+let dailyTimerInterval = null;
 
 function highestUnlockedMultiplier() {
   return levelMultipliers[getHighestUnlockedLevel()];
@@ -2461,11 +2466,62 @@ function dailyRewardEstimate(number) {
   return Math.floor(dailyBaseRewards[number] * highestUnlockedMultiplier());
 }
 
-function openDailyMenu() {
+function renderDailyReward(number) {
+  const base = dailyBaseRewards[number];
+  const total = dailyRewardEstimate(number);
+  const bonus = total - base;
+  dailyRewardPreview.innerHTML = `<div class="daily-reward-equation">${base} + ${bonus} = ${total} points</div><div class="daily-reward-labels"><span>Base points</span><span>Multiplier bonus</span><span>Total</span></div>`;
+}
+
+function updateDailyTimer() {
+  if (!dailyResetAt) { dailyResetTimer.textContent = "Resets in --:--:--"; return; }
+  const ms = dailyResetAt.getTime() - Date.now();
+  if (ms <= 0) {
+    dailyResetTimer.textContent = "Resetting…";
+    dailyResetAt = null;
+    refreshDailyMenu();
+    return;
+  }
+  const seconds = Math.floor(ms / 1000);
+  const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  dailyResetTimer.textContent = `Resets in ${h}:${m}:${s}`;
+}
+
+function applyDailyStatus() {
+  dailyOptions.forEach(button => {
+    const number = Number(button.dataset.daily);
+    const used = !!dailyStatusByNumber[number]?.used;
+    button.classList.toggle("used", used);
+    button.querySelector(".daily-used")?.classList.toggle("hidden", !used);
+    button.disabled = !currentUser || used;
+  });
+}
+
+async function refreshDailyMenu() {
+  if (!currentUser) {
+    dailyStatusByNumber = {};
+    applyDailyStatus();
+    return;
+  }
+  const [{ data: statuses }, { data: info }] = await Promise.all([
+    supabaseClient.rpc("get_daily_status"),
+    supabaseClient.rpc("get_daily_info")
+  ]);
+  dailyStatusByNumber = {};
+  (statuses || []).forEach(row => { dailyStatusByNumber[Number(row.puzzle_number)] = row; });
+  if (info?.reset_at) dailyResetAt = new Date(info.reset_at);
+  applyDailyStatus();
+  updateDailyTimer();
+}
+
+async function openDailyMenu() {
   dailyOverlay.classList.remove("hidden");
   dailyToggleButton.setAttribute("aria-expanded", "true");
   dailyLoginNote.classList.toggle("hidden", !!currentUser);
-  dailyOptions.forEach(button => button.disabled = !currentUser);
+  await refreshDailyMenu();
+  if (!dailyTimerInterval) dailyTimerInterval = setInterval(updateDailyTimer, 1000);
 }
 
 function closeDailyMenu() {
@@ -2489,6 +2545,8 @@ function showDailyChooser() {
   dailyMessage.textContent = "";
   dailyGuessInput.value = "";
   dailyAutocomplete.innerHTML = "";
+  dailyBackButton.classList.add("hidden");
+  applyDailyStatus();
 }
 
 async function startDaily(number) {
@@ -2501,9 +2559,10 @@ async function startDaily(number) {
   const { data: result, error } = await supabaseClient.rpc("start_daily_puzzle", {
     p_puzzle_number: number
   });
-  dailyOptions.forEach(button => button.disabled = false);
+  applyDailyStatus();
 
   if (error) {
+    await refreshDailyMenu();
     dailyMessage.textContent = "";
     alert(error.message.includes("cannot be reopened")
       ? "That Daily is already used or locked until the next 18:00 reset."
@@ -2520,9 +2579,10 @@ async function startDaily(number) {
   dailyGame.classList.remove("hidden");
   dailyModeName.textContent = dailyNames[number];
   dailyGuessCounter.textContent = `${Number(row.guess_count || 0)} / 8 guesses`;
-  dailyRewardPreview.textContent = `${dailyRewardEstimate(number)} points if correct`;
+  renderDailyReward(number);
   dailyGuessTableBody.innerHTML = "";
   dailyMessage.textContent = "";
+  dailyBackButton.classList.add("hidden");
   dailyGuessInput.disabled = false;
   dailyGuessButton.disabled = false;
   dailyGuessInput.focus();
@@ -2530,7 +2590,8 @@ async function startDaily(number) {
 
 function dailyCategoryCell(info) {
   if (!info) return `<div class="cell daily-hidden-cell">—</div>`;
-  return `<div class="cell ${info.match ? "green" : "gray"}">${info.value}</div>`;
+  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+  return `<div class="cell ${color}">${info.value}</div>`;
 }
 
 function dailyStatCell(info) {
@@ -2538,7 +2599,8 @@ function dailyStatCell(info) {
   let arrow = "";
   if (!info.match && info.direction === "higher") arrow = " ↑";
   if (!info.match && info.direction === "lower") arrow = " ↓";
-  return `<div class="cell ${info.match ? "green" : "gray"}">${info.value}${arrow}</div>`;
+  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+  return `<div class="cell ${color}">${info.value}${arrow}</div>`;
 }
 
 function addDailyGuessRow(guess, result) {
@@ -2591,6 +2653,8 @@ async function makeDailyGuess() {
     activeDailyFinished = true;
     dailyGuessButton.disabled = true;
     dailyGuessInput.disabled = true;
+    dailyBackButton.classList.remove("hidden");
+    await refreshDailyMenu();
 
     if (result.correct) {
       dailyMessage.textContent = `🎉 Correct! The Skylander was ${result.answer}! You earned ${Number(result.score_awarded || 0)} points!`;
@@ -2628,6 +2692,14 @@ dailyToggleButton.addEventListener("click", openDailyMenu);
 closeDailyButton.addEventListener("click", closeDailyMenu);
 dailyOptions.forEach(button => button.addEventListener("click", () => startDaily(Number(button.dataset.daily))));
 dailyGuessButton.addEventListener("click", makeDailyGuess);
+dailyBackButton.addEventListener("click", async () => {
+  if (!activeDailyFinished) return;
+  activeDailyToken = null;
+  activeDailyNumber = null;
+  activeDailyFinished = false;
+  showDailyChooser();
+  await refreshDailyMenu();
+});
 dailyGuessInput.addEventListener("keydown", event => { if (event.key === "Enter") makeDailyGuess(); });
 
 dailyOverlay.addEventListener("click", event => {

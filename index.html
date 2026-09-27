@@ -44,24 +44,24 @@
 
     <div id="dailyOverlay" class="daily-overlay hidden">
       <aside class="daily-panel" role="dialog" aria-modal="true" aria-labelledby="dailyTitle">
-        <div class="daily-heading"><div><h2 id="dailyTitle">☀️ Daily Skylandle</h2><p class="muted">Three puzzles reset every day at 18:00 Copenhagen time.</p></div><button id="closeDailyButton" type="button" class="secondary">✕ Close</button></div>
+        <div class="daily-heading"><div><h2 id="dailyTitle">☀️ Daily Skylandle</h2><p class="muted">Three puzzles reset every day at 18:00 Copenhagen time.</p><p id="dailyResetTimer" class="daily-reset-timer">Resets in --:--:--</p></div><button id="closeDailyButton" type="button" class="secondary">✕ Close</button></div>
         <div id="dailyChooser">
           <p id="dailyLoginNote" class="daily-note">You must be logged in to play Daily puzzles.</p>
           <div class="daily-options">
-            <button class="daily-option" type="button" data-daily="1"><strong>Normal</strong><span>All 8 categories</span><span class="daily-reward">30 base points</span></button>
-            <button class="daily-option" type="button" data-daily="2"><strong>Hard</strong><span>6 random categories per guess</span><span class="daily-reward">75 base points</span></button>
-            <button class="daily-option" type="button" data-daily="3"><strong>Extreme</strong><span>4 random categories per guess</span><span class="daily-reward">150 base points</span></button>
+            <button class="daily-option" type="button" data-daily="1"><strong>Normal</strong><span>All 8 categories</span><span class="daily-reward">30 base points</span><span class="daily-used hidden">🔒 Daily Puzzle Used</span></button>
+            <button class="daily-option" type="button" data-daily="2"><strong>Hard</strong><span>6 random categories per guess</span><span class="daily-reward">60 base points</span><span class="daily-used hidden">🔒 Daily Puzzle Used</span></button>
+            <button class="daily-option" type="button" data-daily="3"><strong>Extreme</strong><span>4 random categories per guess</span><span class="daily-reward">120 base points</span><span class="daily-used hidden">🔒 Daily Puzzle Used</span></button>
           </div>
           <p class="daily-warning">You get 8 guesses. Once a Daily starts, refreshing, closing, logging out, or leaving it locks that puzzle until the next reset.</p>
         </div>
 
         <div id="dailyGame" class="hidden">
-          <div class="daily-game-bar"><div><strong id="dailyModeName">Normal</strong><span id="dailyGuessCounter">0 / 8 guesses</span></div><span id="dailyRewardPreview" class="multiplier-badge"></span></div>
+          <div class="daily-game-bar"><div><strong id="dailyModeName">Normal</strong><span id="dailyGuessCounter">0 / 8 guesses</span></div><div id="dailyRewardPreview" class="daily-reward-preview"></div></div>
           <div class="guess-area">
             <div class="autocomplete-wrap"><input id="dailyGuessInput" type="text" placeholder="Type any Skylander..." autocomplete="off"><div id="dailyAutocomplete" class="autocomplete"></div></div>
             <button id="dailyGuessButton" type="button">Guess</button>
           </div>
-          <div id="dailyMessage" class="win-message" aria-live="polite"></div>
+          <div id="dailyMessage" class="win-message" aria-live="polite"></div><button id="dailyBackButton" type="button" class="secondary daily-back hidden">← Back to Daily Puzzles</button>
           <div class="table-wrap"><table><thead><tr><th>Skylander</th><th>Element</th><th>Game</th><th>Gimmick</th><th>Attack Form</th><th>Color</th><th>Health</th><th>Speed</th><th>Armor</th></tr></thead><tbody id="dailyGuessTableBody"></tbody></table></div>
         </div>
       </aside>
