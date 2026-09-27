@@ -1709,11 +1709,11 @@ const levelMultipliers = {
 
 const levelScoreRequirements = {
   1: 0,
-  2: 100,
-  3: 500,
-  4: 2000,
-  5: 5000,
-  6: 10000
+  2: 150,
+  3: 750,
+  4: 3000,
+  5: 10000,
+  6: 25000
 };
 
 function isLevelUnlocked(level) {
