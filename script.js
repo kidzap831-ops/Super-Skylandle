@@ -2116,6 +2116,7 @@ function startGame() {
 
   updateScore();
   stopRoundCooldown();
+  if (!favoritesOverlay.classList.contains("hidden")) renderFavorites();
 }
 
 /* =========================
@@ -2180,6 +2181,7 @@ function makeGuess() {
   // The 60-second cooldown begins only after the first valid guess.
   if (guessCount === 1) {
     startRoundCooldown();
+    if (!favoritesOverlay.classList.contains("hidden")) renderFavorites();
   }
 
   updateScore();
@@ -2344,23 +2346,89 @@ FAVORITES
 const favoritesToggleButton = document.getElementById("favoritesToggleButton");
 const favoritesOverlay = document.getElementById("favoritesOverlay");
 const closeFavoritesButton = document.getElementById("closeFavoritesButton");
-const favoriteElementSelect = document.getElementById("favoriteElementSelect");
+const chooseFavoriteElementButton = document.getElementById("chooseFavoriteElementButton");
+const favoriteElementGrid = document.getElementById("favoriteElementGrid");
+const selectedFavoriteElement = document.getElementById("selectedFavoriteElement");
 const favoriteSkylanderSelect = document.getElementById("favoriteSkylanderSelect");
+const favoriteRoundLockNote = document.getElementById("favoriteRoundLockNote");
 const favoriteStatus = document.getElementById("favoriteStatus");
 const gameUnlockLevel = {"Spyro's Adventure":1,"Giants":2,"Swap Force":3,"Trap Team":4,"SuperChargers":5,"Imaginators":6};
+const favoriteElementOrder = ["Life","Water","Fire","Magic","Tech","Earth","Air","Undead","Light","Dark"];
+
 function getSkylanderUnlockLevel(s){return gameUnlockLevel[s.game]||6;}
+function favoritesLockedForRound(){return guessCount > 0 && !gameOver;}
 function setFavoriteStatus(message,isError=false){favoriteStatus.textContent=message;favoriteStatus.classList.toggle("error",isError);}
-function renderFavorites(){
-  const elements=[...new Set(data.map(s=>s.element))].sort();
-  favoriteElementSelect.innerHTML='<option value="">None selected</option>'+elements.map(e=>`<option value="${e}">${e}</option>`).join("");
-  favoriteElementSelect.value=favoriteElement||"";
-  if(!favoriteElement){favoriteSkylanderSelect.innerHTML='<option value="">None selected</option>';favoriteSkylanderSelect.disabled=true;return;}
-  const choices=data.filter(s=>s.element===favoriteElement).sort((a,b)=>a.name.localeCompare(b.name));
-  favoriteSkylanderSelect.innerHTML='<option value="">None selected</option>'+choices.map(s=>{const l=getSkylanderUnlockLevel(s),locked=l>currentLevel,label=locked?`🔒 ${s.name} — Level ${l}`:s.name;return `<option value="${s.name}" ${locked?"disabled":""}>${label}</option>`;}).join("");
-  favoriteSkylanderSelect.disabled=false;
-  const ok=choices.some(s=>s.name===favoriteSkylander&&getSkylanderUnlockLevel(s)<=currentLevel);
-  favoriteSkylanderSelect.value=ok?favoriteSkylander:"";
+
+function elementIconSvg(element){
+  const common='viewBox="0 0 64 64" aria-hidden="true"';
+  const icons={
+    Fire:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#c92c2c"/><path d="M34 9c4 12-6 14-2 24 3-6 9-7 11-14 8 10 10 21 4 30-7 11-25 12-32 1-7-11-1-24 9-31-1 8 2 12 6 14-2-10 7-15 4-24z" fill="white"/></svg>`,
+    Water:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#2466b1"/><path d="M32 10C25 23 16 31 16 42a16 16 0 0032 0c0-11-9-19-16-32zm-9 33c1 7 6 10 12 11-9 3-16-2-17-10z" fill="white"/></svg>`,
+    Life:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#35a84b"/><path d="M31 51c-1-12 1-21 8-30-1 12-4 21-8 30zM31 36C17 35 13 25 13 15c12 2 20 7 18 21zm4 2c2-13 10-19 19-21-1 12-6 20-19 21z" fill="white"/></svg>`,
+    Undead:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#777"/><path d="M18 29c0-10 6-17 14-17s14 7 14 17c0 7-3 10-7 13v9h-5v-7h-4v7h-5v-9c-4-3-7-6-7-13zm8-2a4 4 0 108 0 4 4 0 00-8 0zm12 0a4 4 0 108 0 4 4 0 00-8 0z" fill="white"/></svg>`,
+    Magic:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#76449b"/><path d="M32 8l6 15 16-5-10 13 12 11-17-2-7 16-7-16-17 2 12-11-10-13 16 5z" fill="white"/></svg>`,
+    Tech:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#e27b22"/><path d="M28 10h8l2 7 6 3 7-2 4 7-5 5v7l5 5-4 7-7-2-6 3-2 7h-8l-2-7-6-3-7 2-4-7 5-5v-7l-5-5 4-7 7 2 6-3zm4 13a9 9 0 100 18 9 9 0 000-18z" fill="white"/></svg>`,
+    Earth:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#9a5b24"/><path d="M10 45l12-22 8 11 8-20 16 31H10zm19 0l9-18 9 18H29z" fill="white"/></svg>`,
+    Air:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#47b9dc"/><path d="M14 25c7-10 23-10 28 0 4 8-2 16-10 14-6-2-6-10 0-12 4-1 7 2 6 5 3-5-1-10-6-11-8-2-14 5-18 4zm4 17c9 7 25 5 31-6-1 13-19 22-31 6z" fill="white"/></svg>`,
+    Light:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#d9b42c"/><circle cx="32" cy="32" r="10" fill="white"/><path d="M30 6h4v13h-4zM30 45h4v13h-4zM6 30h13v4H6zM45 30h13v4H45zM13 15l3-3 9 9-3 3zM39 40l3-3 9 9-3 3zM12 48l9-9 3 3-9 9zM40 22l9-9 3 3-9 9z" fill="white"/></svg>`,
+    Dark:`<svg ${common}><circle cx="32" cy="32" r="29" fill="#3e355f"/><path d="M43 11c-15 4-21 22-12 34 5 7 13 9 21 7-7 7-18 9-27 4C12 49 8 33 15 21 21 11 33 7 43 11z" fill="white"/></svg>`
+  };
+  return icons[element]||'';
 }
+
+function renderElementGrid(){
+  const locked=favoritesLockedForRound();
+  favoriteElementGrid.innerHTML=favoriteElementOrder.map(element=>`
+    <button type="button" class="favorite-element-option ${favoriteElement===element?'selected':''}" data-element="${element}" ${locked?'disabled':''}>
+      <span class="favorite-element-icon">${elementIconSvg(element)}</span>
+      <span>${element}</span>
+    </button>`).join('');
+  favoriteElementGrid.querySelectorAll('.favorite-element-option').forEach(button=>{
+    button.addEventListener('click',async()=>{
+      if(favoritesLockedForRound()){setFavoriteStatus('Finish the current round before changing favorites.',true);return;}
+      favoriteElement=button.dataset.element;
+      favoriteSkylander=null;
+      favoriteElementGrid.classList.add('hidden');
+      await saveFavorites();
+      renderFavorites();
+    });
+  });
+}
+
+function renderFavorites(){
+  const locked=favoritesLockedForRound();
+  chooseFavoriteElementButton.disabled=locked;
+  chooseFavoriteElementButton.textContent=favoriteElement?`Change Favorite Element (${favoriteElement})`:'Select Favorite Element';
+  selectedFavoriteElement.textContent=favoriteElement?`Selected element: ${favoriteElement}`:'No favorite element selected';
+  favoriteRoundLockNote.classList.toggle('hidden',!locked);
+  renderElementGrid();
+
+  if(!favoriteElement){
+    favoriteSkylanderSelect.innerHTML='<option value="">Select an element first</option>';
+    favoriteSkylanderSelect.disabled=true;
+    return;
+  }
+
+  const choices=data.filter(s=>s.element===favoriteElement).sort((a,b)=>{
+    const levelDiff=getSkylanderUnlockLevel(a)-getSkylanderUnlockLevel(b);
+    return levelDiff || a.name.localeCompare(b.name);
+  });
+  let html='<option value="">None selected</option>';
+  for(let level=1;level<=6;level++){
+    const group=choices.filter(s=>getSkylanderUnlockLevel(s)===level);
+    if(!group.length) continue;
+    const gameName=Object.keys(gameUnlockLevel).find(g=>gameUnlockLevel[g]===level)||`Level ${level}`;
+    html+=`<optgroup label="Level ${level} — ${gameName}">`+group.map(s=>{
+      const isLocked=level>currentLevel;
+      return `<option value="${s.name}" ${isLocked?'disabled':''}>${isLocked?`🔒 ${s.name} — Level ${level}`:s.name}</option>`;
+    }).join('')+'</optgroup>';
+  }
+  favoriteSkylanderSelect.innerHTML=html;
+  const ok=choices.some(s=>s.name===favoriteSkylander&&getSkylanderUnlockLevel(s)<=currentLevel);
+  favoriteSkylanderSelect.value=ok?favoriteSkylander:'';
+  favoriteSkylanderSelect.disabled=locked;
+}
+
 async function saveFavorites(){
   if(!currentUser){setFavoriteStatus("Log in to save favorites.",true);return false;}
   const {error}=await supabaseClient.rpc("set_favorites",{p_element:favoriteElement,p_skylander:favoriteSkylander});
@@ -2373,12 +2441,19 @@ async function enforceFavoriteForCurrentLevel(){
   if(!selected||getSkylanderUnlockLevel(selected)>currentLevel){favoriteSkylander=null;if(currentUser)await saveFavorites();}
 }
 function openFavoritesMenu(){renderFavorites();setFavoriteStatus(currentUser?"":"Log in to save favorites.",!currentUser);favoritesOverlay.classList.remove("hidden");favoritesToggleButton.setAttribute("aria-expanded","true");}
-function closeFavoritesMenu(){favoritesOverlay.classList.add("hidden");favoritesToggleButton.setAttribute("aria-expanded","false");}
+function closeFavoritesMenu(){favoritesOverlay.classList.add("hidden");favoritesToggleButton.setAttribute("aria-expanded","false");favoriteElementGrid.classList.add('hidden');}
 favoritesToggleButton.addEventListener("click",()=>favoritesOverlay.classList.contains("hidden")?openFavoritesMenu():closeFavoritesMenu());
 closeFavoritesButton.addEventListener("click",closeFavoritesMenu);
 favoritesOverlay.addEventListener("click",e=>{if(e.target===favoritesOverlay)closeFavoritesMenu();});
-favoriteElementSelect.addEventListener("change",async()=>{favoriteElement=favoriteElementSelect.value||null;favoriteSkylander=null;renderFavorites();await saveFavorites();});
-favoriteSkylanderSelect.addEventListener("change",async()=>{favoriteSkylander=favoriteSkylanderSelect.value||null;await saveFavorites();});
+chooseFavoriteElementButton.addEventListener('click',()=>{
+  if(favoritesLockedForRound()){setFavoriteStatus('Finish the current round before changing favorites.',true);return;}
+  favoriteElementGrid.classList.toggle('hidden');
+});
+favoriteSkylanderSelect.addEventListener("change",async()=>{
+  if(favoritesLockedForRound()){renderFavorites();setFavoriteStatus('Finish the current round before changing favorites.',true);return;}
+  favoriteSkylander=favoriteSkylanderSelect.value||null;
+  await saveFavorites();
+});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!favoritesOverlay.classList.contains("hidden"))closeFavoritesMenu();});
 
 /* =========================
