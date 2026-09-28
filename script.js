@@ -2895,6 +2895,7 @@ const achievementList = document.getElementById("achievementList");
 const achievementSummary = document.getElementById("achievementSummary");
 const titleSelect = document.getElementById("titleSelect");
 const titleStatus = document.getElementById("titleStatus");
+const passiveBuffsList = document.getElementById("passiveBuffsList");
 
 const achievementDefinitions = [
   {id:"first_steps", name:"First Steps", description:"Win 1 normal game", reward:"Title: Newcomer", stat:"normal_wins", goal:1},
@@ -2920,6 +2921,7 @@ async function loadAchievements() {
     achievementList.innerHTML = '<p class="muted">Log in to view achievements.</p>';
     titleSelect.innerHTML = '<option value="">No title</option>';
     titleSelect.disabled = true;
+    passiveBuffsList.innerHTML = '<p class="muted">Log in to view your passive buffs.</p>';
     return;
   }
   achievementList.innerHTML = '<p class="muted">Loading achievements...</p>';
@@ -2935,6 +2937,25 @@ async function loadAchievements() {
   const {data: unlockedRows} = await supabaseClient.from("player_achievements").select("achievement_id").eq("user_id", currentUser.id);
   const unlocked = new Set((unlockedRows || []).map(x => x.achievement_id));
   const stats = info.stats || {};
+  const buffs = info.buffs || {};
+  const activeBuffs = [];
+  const normalFlat = Number(buffs.normal_flat_bonus || 0);
+  const allPercent = Number(buffs.all_score_percent || 0);
+  const firstTryFlat = Number(buffs.first_try_flat_bonus || 0);
+  const firstTryPercent = Number(buffs.first_try_percent || 0);
+  const favoriteElementPercent = Number(buffs.favorite_element_percent || 0);
+  const favoriteSkylanderPercent = Number(buffs.favorite_skylander_percent || 0);
+  const dailyFlat = Number(buffs.daily_flat_bonus || 0);
+  if (normalFlat > 0) activeBuffs.push(`+${normalFlat} point${normalFlat === 1 ? "" : "s"} per normal win`);
+  if (allPercent > 0) activeBuffs.push(`+${allPercent}% score on all games`);
+  if (firstTryFlat > 0) activeBuffs.push(`+${firstTryFlat} points on first-try wins`);
+  if (firstTryPercent > 0) activeBuffs.push(`+${firstTryPercent}% score on first-try wins`);
+  if (favoriteElementPercent > 0) activeBuffs.push(`+${favoriteElementPercent}% favorite-element bonus`);
+  if (favoriteSkylanderPercent > 0) activeBuffs.push(`+${favoriteSkylanderPercent}% favorite-Skylander bonus`);
+  if (dailyFlat > 0) activeBuffs.push(`+${dailyFlat} point${dailyFlat === 1 ? "" : "s"} on Daily wins`);
+  passiveBuffsList.innerHTML = activeBuffs.length
+    ? activeBuffs.map(buff => `<div class="passive-buff-item"><span class="passive-buff-icon">⚡</span><span>${buff}</span></div>`).join("")
+    : '<p class="muted passive-buffs-empty">No passive buffs unlocked yet.</p>';
   const scoreNow = Number(profile?.total_score || totalScore || 0);
   achievementSummary.textContent = `${unlocked.size} / ${achievementDefinitions.length} achievements unlocked`;
   achievementList.innerHTML = "";
