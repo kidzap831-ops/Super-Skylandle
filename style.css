@@ -31,3 +31,14 @@ input{width:100%;border:1px solid #3d4352;border-radius:10px;padding:12px 14px;b
 .favorite-current{margin:8px 0 4px;color:#c8cede;font-size:.92rem}.favorite-lock-note{margin:10px 0 0;color:#f4c96b;font-size:.86rem;font-weight:700}
 .favorite-select optgroup{font-weight:900;color:#cfc5ff;background:#181b23}.favorite-select option{color:#fff;background:#181b23}
 @media(max-width:420px){.favorite-element-grid{gap:7px}.favorite-element-option{min-height:84px;font-size:.82rem}.favorite-element-icon{width:42px;height:42px}}
+
+
+/* Achievements + titles */
+.account-title{display:block;margin-top:3px;color:#b9adff;font-size:.88rem;font-weight:800}
+.achievements-toggle{position:fixed!important;top:68px!important;left:16px!important;z-index:1001!important;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.achievements-overlay{position:fixed!important;inset:0!important;z-index:1000!important;background:rgba(5,7,12,.72);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:flex-start;padding:122px 16px 16px}
+.achievements-panel{width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 138px);overflow:auto;padding:18px;border:1px solid #3a4050;border-radius:16px;background:#181b23;box-shadow:0 22px 60px rgba(0,0,0,.5)}
+.achievements-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}.achievements-heading h2,.achievements-heading p{margin-top:0}.achievements-heading h2{margin-bottom:4px}
+.title-picker{padding:14px;border:1px solid #3a4050;border-radius:12px;background:#20242e;margin-bottom:14px}.title-picker label{display:block;font-weight:900;margin-bottom:7px}.title-picker select{width:100%;border:1px solid #3d4352;border-radius:10px;padding:11px 13px;background:#181b23;color:#fff;font:inherit}.achievement-status{min-height:1.2em;margin:7px 0 0;color:#b9adff;font-size:.86rem}
+.achievement-summary{margin-bottom:12px;color:#c8cede;font-weight:800}.achievement-list{display:grid;gap:10px}.achievement-card{padding:13px 14px;border:1px solid #343a48;border-radius:12px;background:#20242e}.achievement-card.unlocked{border-color:#4f9a67;background:rgba(40,122,71,.13)}.achievement-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.achievement-name{font-weight:900;font-size:1.04rem}.achievement-lock{white-space:nowrap;font-weight:900}.achievement-description,.achievement-reward,.achievement-progress{margin-top:5px;color:#c8cede;font-size:.88rem}.achievement-reward strong{color:#b9adff}.achievement-progress-bar{height:7px;margin-top:7px;border-radius:999px;background:#343946;overflow:hidden}.achievement-progress-fill{height:100%;background:#7557ff;border-radius:999px}.achievement-card.unlocked .achievement-progress-fill{background:#4f9a67}
+@media(max-width:760px){.achievements-toggle{top:58px!important;left:10px!important}.achievements-overlay{padding:108px 10px 10px}.achievements-panel{width:calc(100vw - 20px);max-height:calc(100vh - 118px)}}

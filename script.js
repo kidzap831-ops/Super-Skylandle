@@ -1760,6 +1760,7 @@ const logoutButton = document.getElementById("logoutButton");
 const loggedOutView = document.getElementById("loggedOutView");
 const loggedInView = document.getElementById("loggedInView");
 const accountUsername = document.getElementById("accountUsername");
+const accountTitle = document.getElementById("accountTitle");
 const authMessage = document.getElementById("authMessage");
 
 function setAuthMessage(message, isError = false) {
@@ -1778,7 +1779,7 @@ async function loadProfile() {
 
   const { data: profile, error } = await supabaseClient
     .from("profiles")
-    .select("username, score, total_score, favorite_element, favorite_skylander")
+    .select("username, score, total_score, favorite_element, favorite_skylander, equipped_title")
     .eq("id", currentUser.id)
     .single();
 
@@ -1793,6 +1794,13 @@ async function loadProfile() {
   favoriteSkylander = profile.favorite_skylander || null;
   accountUsername.textContent =
     profile.username || currentUser.email || "Player";
+  if (profile.equipped_title) {
+    accountTitle.textContent = profile.equipped_title;
+    accountTitle.classList.remove("hidden");
+  } else {
+    accountTitle.textContent = "";
+    accountTitle.classList.add("hidden");
+  }
 
   updateScore();
   enforceUnlockedLevel();
@@ -1812,6 +1820,8 @@ async function refreshAccount(session) {
     loggedOutView.classList.remove("hidden");
     loggedInView.classList.add("hidden");
     accountUsername.textContent = "Player";
+    accountTitle.textContent = "";
+    accountTitle.classList.add("hidden");
     totalScore = 0;
     updateScore();
     enforceUnlockedLevel();
@@ -2238,18 +2248,24 @@ async function showWin() {
       return;
     }
     const base = Number(result.base_points) || 0;
-    const elementBonus = Number(result.element_bonus) || 0;
-    const skylanderBonus = Number(result.skylander_bonus) || 0;
+    const elementBonus = Number(result.favorite_element_bonus) || 0;
+    const skylanderBonus = Number(result.favorite_skylander_bonus) || 0;
+    const achievementFlat = Number(result.normal_achievement_bonus) || 0;
+    const firstTryFlat = Number(result.first_try_flat_bonus) || 0;
+    const firstTryPercentBonus = Number(result.first_try_percent_bonus) || 0;
+    const globalBonus = Number(result.global_percent_bonus) || 0;
     const favoriteBonus = elementBonus + skylanderBonus;
     const awarded = Number(result.points_awarded) || base;
     totalScore = Number(result.total_score) || totalScore;
     let bonusText = "";
-    if (favoriteBonus > 0) {
-      const parts = [];
-      if (elementBonus > 0) parts.push(`+${elementBonus} favorite element`);
-      if (skylanderBonus > 0) parts.push(`+${skylanderBonus} favorite Skylander`);
-      bonusText = ` (${base} base, ${parts.join(", ")})`;
-    }
+    const parts = [];
+    if (elementBonus > 0) parts.push(`+${elementBonus} favorite element`);
+    if (skylanderBonus > 0) parts.push(`+${skylanderBonus} favorite Skylander`);
+    if (achievementFlat > 0) parts.push(`+${achievementFlat} achievement bonus`);
+    if (firstTryFlat > 0) parts.push(`+${firstTryFlat} first-try bonus`);
+    if (firstTryPercentBonus > 0) parts.push(`+${firstTryPercentBonus} first-try %`);
+    if (globalBonus > 0) parts.push(`+${globalBonus} Portal Master`);
+    if (parts.length) bonusText = ` (${base} base, ${parts.join(", ")})`;
     document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${awarded} points${bonusText}!`;
     updateScore();
     enforceUnlockedLevel();
@@ -2867,3 +2883,97 @@ supabaseClient.auth.onAuthStateChange(event => {
     showDailyChooser();
   }
 });
+
+
+/* =========================
+ACHIEVEMENTS + TITLES
+========================= */
+const achievementsToggleButton = document.getElementById("achievementsToggleButton");
+const achievementsOverlay = document.getElementById("achievementsOverlay");
+const closeAchievementsButton = document.getElementById("closeAchievementsButton");
+const achievementList = document.getElementById("achievementList");
+const achievementSummary = document.getElementById("achievementSummary");
+const titleSelect = document.getElementById("titleSelect");
+const titleStatus = document.getElementById("titleStatus");
+
+const achievementDefinitions = [
+  {id:"first_steps", name:"First Steps", description:"Win 1 normal game", reward:"Title: Newcomer", stat:"normal_wins", goal:1},
+  {id:"getting_good", name:"Getting Good", description:"Win 50 normal games", reward:"+1 point per normal win", stat:"normal_wins", goal:50},
+  {id:"skylander_pro", name:"Skylander Pro", description:"Win 250 normal games", reward:"Another +1 point per normal win", stat:"normal_wins", goal:250},
+  {id:"portal_master", name:"Portal Master", description:"Win 1,500 normal games and reach 100,000 total score", reward:"Title: Portal Master, +5% on all games, +3 per normal win", stat:"normal_wins", goal:1500, scoreGoal:100000},
+  {id:"first_try", name:"First Try!", description:"Win a normal game on your first guess", reward:"Title: Lucky Shot", stat:"first_try_wins", goal:1},
+  {id:"psychic", name:"Psychic", description:"Get 10 first-guess normal wins", reward:"+5 points on first-try wins", stat:"first_try_wins", goal:10},
+  {id:"lottery_ticket", name:"Buy a Lottery Ticket", description:"Get 40 first-guess normal wins", reward:"Title: Mind-Reader, +1% and +2 points on first-try wins", stat:"first_try_wins", goal:40},
+  {id:"elementalist", name:"Elementalist", description:"Win 25 normal games matching your favorite element", reward:"+1% favorite-element bonus", stat:"favorite_element_wins", goal:25},
+  {id:"elemental_loyalist", name:"Elemental Loyalist", description:"Win 100 normal games matching your favorite element", reward:"Another +1% favorite-element bonus", stat:"favorite_element_wins", goal:100},
+  {id:"i_choose_you", name:"I Choose You!", description:"Win with your exact favorite Skylander once", reward:"+1% favorite-Skylander bonus", stat:"favorite_skylander_wins", goal:1},
+  {id:"true_favourite", name:"True Favourite", description:"Win with your exact favorite Skylander 20 times", reward:"+2% favorite-Skylander bonus, Title: Loyalist", stat:"favorite_skylander_wins", goal:20},
+  {id:"daily_apprentice", name:"Daily Apprentice", description:"Complete all 3 Daily puzzles in one day", reward:"+1 point on Daily wins", stat:"daily_full_completion_days", goal:1},
+  {id:"daily_master", name:"Daily Master", description:"Complete all 3 Dailies on 10 different days", reward:"Title: Puzzle Head", stat:"daily_full_completion_days", goal:10},
+  {id:"collection", name:"Collection", description:"Correctly guess 50 different mystery Skylanders", reward:"+1 point on normal wins", stat:"unique_skylanders", goal:50},
+  {id:"gotta_catch_em_all", name:"Gotta Catch 'em All", description:"Correctly guess 150 unique mystery Skylanders", reward:"Title: Collector", stat:"unique_skylanders", goal:150}
+];
+
+async function loadAchievements() {
+  if (!currentUser) {
+    achievementSummary.textContent = "";
+    achievementList.innerHTML = '<p class="muted">Log in to view achievements.</p>';
+    titleSelect.innerHTML = '<option value="">No title</option>';
+    titleSelect.disabled = true;
+    return;
+  }
+  achievementList.innerHTML = '<p class="muted">Loading achievements...</p>';
+  const [{data: info, error}, {data: profile}] = await Promise.all([
+    supabaseClient.rpc("check_achievements", {p_user_id: currentUser.id}),
+    supabaseClient.from("profiles").select("equipped_title,total_score").eq("id", currentUser.id).single()
+  ]);
+  if (error) {
+    console.error("Could not load achievements:", error);
+    achievementList.innerHTML = '<p class="muted">Could not load achievements.</p>';
+    return;
+  }
+  const {data: unlockedRows} = await supabaseClient.from("player_achievements").select("achievement_id").eq("user_id", currentUser.id);
+  const unlocked = new Set((unlockedRows || []).map(x => x.achievement_id));
+  const stats = info.stats || {};
+  const scoreNow = Number(profile?.total_score || totalScore || 0);
+  achievementSummary.textContent = `${unlocked.size} / ${achievementDefinitions.length} achievements unlocked`;
+  achievementList.innerHTML = "";
+  achievementDefinitions.forEach(a => {
+    const value = Number(stats[a.stat] || 0);
+    const mainProgress = Math.min(value / a.goal, 1);
+    const scoreProgress = a.scoreGoal ? Math.min(scoreNow / a.scoreGoal, 1) : 1;
+    const progress = Math.min(mainProgress, scoreProgress);
+    let progressText = `${Math.min(value,a.goal).toLocaleString()} / ${a.goal.toLocaleString()}`;
+    if (a.scoreGoal) progressText += ` wins • ${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
+    const card = document.createElement("div");
+    card.className = `achievement-card${unlocked.has(a.id) ? " unlocked" : ""}`;
+    card.innerHTML = `<div class="achievement-top"><span class="achievement-name">${a.name}</span><span class="achievement-lock">${unlocked.has(a.id) ? "✅ Unlocked" : "🔒 Locked"}</span></div><div class="achievement-description">${a.description}</div><div class="achievement-reward"><strong>Reward:</strong> ${a.reward}</div><div class="achievement-progress">${progressText}</div><div class="achievement-progress-bar"><div class="achievement-progress-fill" style="width:${Math.round(progress*100)}%"></div></div>`;
+    achievementList.appendChild(card);
+  });
+  const titles = Array.isArray(info.titles) ? info.titles : [];
+  titleSelect.innerHTML = '<option value="">No title</option>';
+  titles.forEach(title => { const option=document.createElement("option"); option.value=title; option.textContent=title; titleSelect.appendChild(option); });
+  titleSelect.value = profile?.equipped_title || "";
+  titleSelect.disabled = false;
+}
+
+async function equipSelectedTitle() {
+  if (!currentUser) return;
+  titleSelect.disabled = true;
+  titleStatus.textContent = "Saving...";
+  const {error} = await supabaseClient.rpc("equip_title", {p_title: titleSelect.value || null});
+  titleSelect.disabled = false;
+  if (error) { titleStatus.textContent = error.message; return; }
+  titleStatus.textContent = titleSelect.value ? `Equipped: ${titleSelect.value}` : "Title removed.";
+  await loadProfile();
+}
+
+achievementsToggleButton.addEventListener("click", async () => {
+  achievementsOverlay.classList.remove("hidden");
+  achievementsToggleButton.setAttribute("aria-expanded", "true");
+  await loadAchievements();
+});
+closeAchievementsButton.addEventListener("click", () => { achievementsOverlay.classList.add("hidden"); achievementsToggleButton.setAttribute("aria-expanded", "false"); });
+achievementsOverlay.addEventListener("click", e => { if (e.target === achievementsOverlay) closeAchievementsButton.click(); });
+titleSelect.addEventListener("change", equipSelectedTitle);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !achievementsOverlay.classList.contains("hidden")) closeAchievementsButton.click(); });

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skylandle</title>
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
   <main class="page">
@@ -20,7 +20,7 @@
         </div>
         <div class="account-buttons"><button id="signUpButton" type="button">Create Account</button><button id="loginButton" type="button">Log In</button></div>
       </div>
-      <div id="loggedInView" class="hidden"><div class="logged-in-row"><div><div class="muted">Logged in as</div><strong id="accountUsername">Player</strong></div><button id="logoutButton" type="button" class="secondary">Log Out</button></div></div>
+      <div id="loggedInView" class="hidden"><div class="logged-in-row"><div><div class="muted">Logged in as</div><strong id="accountUsername">Player</strong><span id="accountTitle" class="account-title hidden"></span></div><button id="logoutButton" type="button" class="secondary">Log Out</button></div></div>
       <p id="authMessage" class="auth-message" aria-live="polite"></p>
     </section>
 
@@ -32,6 +32,16 @@
 
     <button id="leaderboardToggleButton" class="leaderboard-toggle" type="button" aria-expanded="false">🏆 Leaderboard</button>
     <button id="dailyToggleButton" class="daily-toggle" type="button" aria-expanded="false">☀️ Daily</button>
+    <button id="achievementsToggleButton" class="achievements-toggle" type="button" aria-expanded="false">🏅 Achievements</button>
+    <div id="achievementsOverlay" class="achievements-overlay hidden">
+      <aside class="achievements-panel" role="dialog" aria-modal="true" aria-labelledby="achievementsTitle">
+        <div class="achievements-heading"><div><h2 id="achievementsTitle">🏅 Achievements</h2><p class="muted">Complete challenges to unlock permanent bonuses and titles.</p></div><button id="closeAchievementsButton" type="button" class="secondary">✕ Close</button></div>
+        <div class="title-picker"><label for="titleSelect">Equipped Title</label><select id="titleSelect"><option value="">No title</option></select><p id="titleStatus" class="achievement-status" aria-live="polite"></p></div>
+        <div id="achievementSummary" class="achievement-summary"></div>
+        <div id="achievementList" class="achievement-list"><p class="muted">Log in to view achievements.</p></div>
+      </aside>
+    </div>
+
 
     <div id="leaderboardOverlay" class="leaderboard-overlay hidden">
       <aside class="leaderboard-panel" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
@@ -101,6 +111,6 @@
     </aside></div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>
