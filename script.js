@@ -1996,7 +1996,18 @@ async function loadLeaderboard() {
       const scoreCell = document.createElement("td");
 
       rankCell.textContent = `#${player.rank}`;
-      usernameCell.textContent = player.username || "Unnamed player";
+
+      const usernameName = document.createElement("div");
+      usernameName.textContent = player.username || "Unnamed player";
+      usernameCell.appendChild(usernameName);
+
+      if (player.equipped_title) {
+        const title = document.createElement("div");
+        title.className = "leaderboard-player-title";
+        title.textContent = player.equipped_title;
+        usernameCell.appendChild(title);
+      }
+
       scoreCell.textContent = Number(player.total_score || 0).toLocaleString();
 
       row.append(rankCell, usernameCell, scoreCell);

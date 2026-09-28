@@ -45,3 +45,6 @@ input{width:100%;border:1px solid #3d4352;border-radius:10px;padding:12px 14px;b
 
 /* Active passive buffs */
 .passive-buffs-card{margin:0 0 14px;padding:14px;border:1px solid rgba(141,120,255,.45);border-radius:12px;background:rgba(117,87,255,.09)}.passive-buffs-card h3{margin:0 0 10px;font-size:1rem}.passive-buffs-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.passive-buff-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #3a4050;border-radius:9px;background:#20242e;color:#eef0f8;font-size:.88rem;font-weight:800}.passive-buff-icon{flex:0 0 auto}.passive-buffs-empty{grid-column:1/-1;margin:0}@media(max-width:560px){.passive-buffs-list{grid-template-columns:1fr}}
+
+/* Leaderboard equipped titles */
+.leaderboard-player-title{margin-top:3px;color:#b9adff;font-size:.78rem;font-weight:800;font-style:italic}
