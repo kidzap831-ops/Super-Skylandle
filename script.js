@@ -1938,11 +1938,24 @@ signUpButton.addEventListener("click", signUp);
 loginButton.addEventListener("click", logIn);
 logoutButton.addEventListener("click", logOut);
 
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  // Delay database work until the auth callback has finished.
+let authGameInitialized = false;
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  // Supabase may emit auth/session events when the tab becomes active again.
+  // Refresh the account UI, but do NOT reset an in-progress Normal game.
   setTimeout(async () => {
     await refreshAccount(session);
-    await startGame();
+
+    if (event === "SIGNED_OUT") {
+      authGameInitialized = false;
+      await startGame();
+      return;
+    }
+
+    if (!authGameInitialized) {
+      authGameInitialized = true;
+      await startGame();
+    }
   }, 0);
 });
 
