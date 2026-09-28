@@ -1680,6 +1680,8 @@ GAME VARIABLES
 ========================= */
 
 let correctSkylander;
+let normalGameId = null;
+let normalSessionToken = null;
 let guessCount = 0;
 let totalScore = 0;
 let gameOver = false;
@@ -1938,7 +1940,10 @@ logoutButton.addEventListener("click", logOut);
 
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   // Delay database work until the auth callback has finished.
-  setTimeout(() => refreshAccount(session), 0);
+  setTimeout(async () => {
+    await refreshAccount(session);
+    await startGame();
+  }, 0);
 });
 
 
@@ -2122,22 +2127,62 @@ function startRoundCooldown() {
 START GAME
 ========================= */
 
-function startGame() {
-  const levelPool = getLevelPool();
-  correctSkylander = levelPool[Math.floor(Math.random() * levelPool.length)];
+async function startGame() {
   guessCount = 0;
   gameOver = false;
+  correctSkylander = null;
+  normalGameId = null;
+  normalSessionToken = null;
 
+  const input = document.getElementById("guessInput");
+  const button = document.getElementById("guessButton");
   document.getElementById("guessTableBody").innerHTML = "";
   document.getElementById("winMessage").textContent = "";
-  document.getElementById("guessInput").value = "";
+  input.value = "";
   document.getElementById("autocomplete").innerHTML = "";
-  document.getElementById("guessInput").disabled = false;
-  document.getElementById("guessButton").disabled = false;
+  input.disabled = false;
+  button.disabled = false;
 
   updateScore();
   stopRoundCooldown();
   if (!favoritesOverlay.classList.contains("hidden")) renderFavorites();
+
+  // Logged-in Normal games are created on the server so the mystery
+  // Skylander never has to be sent to the browser before the win.
+  if (currentUser) {
+    input.disabled = true;
+    button.disabled = true;
+    document.getElementById("winMessage").textContent = "Starting secure game…";
+
+    const { data: rows, error } = await supabaseClient.rpc("start_normal_game", {
+      p_level: currentLevel
+    });
+
+    if (error) {
+      console.error("Could not start secure normal game:", error);
+      document.getElementById("winMessage").textContent = "Could not start the game. Try New Game again.";
+      setAuthMessage("Could not start the secure normal game.", true);
+      return;
+    }
+
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!row?.game_id || !row?.session_token) {
+      document.getElementById("winMessage").textContent = "Could not start the game. Try New Game again.";
+      return;
+    }
+
+    normalGameId = row.game_id;
+    normalSessionToken = row.session_token;
+    document.getElementById("winMessage").textContent = "";
+    input.disabled = false;
+    button.disabled = false;
+    input.focus();
+    return;
+  }
+
+  // Guests keep the original local game. Saved/leaderboard scoring requires login.
+  const levelPool = getLevelPool();
+  correctSkylander = levelPool[Math.floor(Math.random() * levelPool.length)];
 }
 
 /* =========================
@@ -2182,12 +2227,11 @@ function statCell(guess, correct) {
 MAKE GUESS
 ========================= */
 
-function makeGuess() {
+async function makeGuess() {
   if (gameOver) return;
 
   const input = document.getElementById("guessInput");
   const guessName = input.value.trim();
-
   const guess = getLevelPool().find(
     skylander => skylander.name.toLowerCase() === guessName.toLowerCase()
   );
@@ -2197,23 +2241,76 @@ function makeGuess() {
     return;
   }
 
-  guessCount++;
+  // Logged-in games submit the guess to the secure server function.
+  if (currentUser) {
+    if (!normalGameId || !normalSessionToken) {
+      setAuthMessage("Start a new secure game first.", true);
+      return;
+    }
 
-  // The 60-second cooldown begins only after the first valid guess.
+    const guessButton = document.getElementById("guessButton");
+    guessButton.disabled = true;
+
+    const { data: result, error } = await supabaseClient.rpc("submit_normal_guess", {
+      p_game_id: normalGameId,
+      p_session_token: normalSessionToken,
+      p_guess_name: guess.name
+    });
+
+    guessButton.disabled = false;
+
+    if (error) {
+      console.error("Could not submit secure normal guess:", error);
+      setAuthMessage(error.message || "Could not submit the guess.", true);
+      return;
+    }
+
+    guessCount = Number(result.guess_count) || (guessCount + 1);
+
+    if (guessCount === 1) {
+      startRoundCooldown();
+      if (!favoritesOverlay.classList.contains("hidden")) renderFavorites();
+    }
+
+    updateScore();
+    addSecureNormalGuessRow(guess, result);
+    input.value = "";
+    document.getElementById("autocomplete").innerHTML = "";
+
+    if (result.correct) {
+      await showWin(result);
+    }
+    return;
+  }
+
+  // Guest/local mode.
+  guessCount++;
   if (guessCount === 1) {
     startRoundCooldown();
     if (!favoritesOverlay.classList.contains("hidden")) renderFavorites();
   }
-
   updateScore();
   addGuessRow(guess);
-
   input.value = "";
   document.getElementById("autocomplete").innerHTML = "";
-
   if (guess.name === correctSkylander.name) {
-    showWin();
+    await showWin();
   }
+}
+
+function addSecureNormalGuessRow(guess, result) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><div class="cell ${result.correct ? "green" : "gray"}">${guess.name}</div></td>
+    <td>${dailyCategoryCell(result.element)}</td>
+    <td>${dailyCategoryCell(result.game)}</td>
+    <td>${dailyCategoryCell(result.gimmick)}</td>
+    <td>${dailyCategoryCell(result.attack_form)}</td>
+    <td>${dailyCategoryCell(result.color)}</td>
+    <td>${dailyStatCell(result.health)}</td>
+    <td>${dailyStatCell(result.speed)}</td>
+    <td>${dailyStatCell(result.armor)}</td>`;
+  document.getElementById("guessTableBody").prepend(row);
 }
 
 function addGuessRow(guess) {
@@ -2238,7 +2335,7 @@ function addGuessRow(guess) {
 WIN
 ========================= */
 
-async function showWin() {
+async function showWin(serverResult = null) {
   gameOver = true;
   updateLevelUI();
   stopRoundCooldown();
@@ -2246,47 +2343,47 @@ async function showWin() {
   document.getElementById("guessButton").disabled = true;
   document.getElementById("autocomplete").innerHTML = "";
 
-  if (currentUser) {
-    const { data: result, error } = await supabaseClient.rpc("award_normal_game", {
-      p_skylander_name: correctSkylander.name,
-      p_guesses: guessCount,
-      p_level: currentLevel
-    });
-    if (error) {
-      console.error("Could not award normal-game score:", error);
-      document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}, but the score could not be awarded.`;
-      setAuthMessage("The game was won, but the score could not be saved.", true);
-      return;
-    }
-    const base = Number(result.base_points) || 0;
-    const elementBonus = Number(result.favorite_element_bonus) || 0;
-    const skylanderBonus = Number(result.favorite_skylander_bonus) || 0;
-    const achievementFlat = Number(result.normal_achievement_bonus) || 0;
-    const firstTryFlat = Number(result.first_try_flat_bonus) || 0;
-    const firstTryPercentBonus = Number(result.first_try_percent_bonus) || 0;
-    const globalBonus = Number(result.global_percent_bonus) || 0;
-    const favoriteBonus = elementBonus + skylanderBonus;
-    const awarded = Number(result.points_awarded) || base;
-    totalScore = Number(result.total_score) || totalScore;
-    let bonusText = "";
+  if (currentUser && serverResult) {
+    const answer = typeof serverResult.answer === "string"
+      ? serverResult.answer
+      : (serverResult.answer?.name || "the mystery Skylander");
+    const base = Number(serverResult.base_points) || 0;
+    const awarded = Number(serverResult.score_awarded) || base;
+    totalScore = Number(serverResult.total_score) || totalScore;
+
     const parts = [];
+    const normalFlat = Number(serverResult.normal_flat_bonus) || 0;
+    const normalPctBonus = Number(serverResult.normal_percent_bonus) || 0;
+    const firstTryFlat = Number(serverResult.first_try_flat_bonus) || 0;
+    const firstTryPctBonus = Number(serverResult.first_try_percent_bonus) || 0;
+    const elementBonus = Number(serverResult.favorite_element_bonus) || 0;
+    const skylanderBonus = Number(serverResult.favorite_skylander_bonus) || 0;
+    const skylanderFlat = Number(serverResult.favorite_skylander_flat_bonus) || 0;
+
+    if (normalFlat > 0) parts.push(`+${normalFlat} achievement flat`);
+    if (normalPctBonus > 0) parts.push(`+${normalPctBonus} achievement %`);
+    if (firstTryFlat > 0) parts.push(`+${firstTryFlat} first-try flat`);
+    if (firstTryPctBonus > 0) parts.push(`+${firstTryPctBonus} first-try %`);
     if (elementBonus > 0) parts.push(`+${elementBonus} favorite element`);
     if (skylanderBonus > 0) parts.push(`+${skylanderBonus} favorite Skylander`);
-    if (achievementFlat > 0) parts.push(`+${achievementFlat} achievement bonus`);
-    if (firstTryFlat > 0) parts.push(`+${firstTryFlat} first-try bonus`);
-    if (firstTryPercentBonus > 0) parts.push(`+${firstTryPercentBonus} first-try %`);
-    if (globalBonus > 0) parts.push(`+${globalBonus} Portal Master`);
-    if (parts.length) bonusText = ` (${base} base, ${parts.join(", ")})`;
-    document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${awarded} points${bonusText}!`;
+    if (skylanderFlat > 0) parts.push(`+${skylanderFlat} Colorful`);
+
+    const bonusText = parts.length ? ` (${base} base, ${parts.join(", ")})` : "";
+    document.getElementById("winMessage").textContent =
+      `🎉 Correct! The Skylander was ${answer}! You scored ${awarded} points${bonusText}!`;
+
     updateScore();
     enforceUnlockedLevel();
     await loadLeaderboard();
+    if (!achievementsOverlay.classList.contains("hidden")) await loadAchievements();
     return;
   }
 
+  // Guest/local mode only. No database score is awarded here.
   const score = getScore(guessCount);
   totalScore += score;
-  document.getElementById("winMessage").textContent = `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
+  document.getElementById("winMessage").textContent =
+    `🎉 Correct! The Skylander was ${correctSkylander.name}! You scored ${score} points!`;
   updateScore();
 }
 
@@ -2542,7 +2639,7 @@ levelOverlay.addEventListener("click", event => {
 });
 
 levelOptions.forEach(option => {
-  option.addEventListener("click", () => {
+  option.addEventListener("click", async () => {
     if (isRoundCooldownActive()) return;
 
     const selectedLevel = Number(option.dataset.level);
@@ -2553,7 +2650,7 @@ levelOptions.forEach(option => {
     updateLevelUI();
     closeLevelMenu();
     enforceFavoriteForCurrentLevel().then(() => renderFavorites());
-    startGame();
+    await startGame();
   });
 });
 
@@ -2570,9 +2667,9 @@ BUTTONS / START
 ========================= */
 
 document.getElementById("guessButton").addEventListener("click", makeGuess);
-newGameButton.addEventListener("click", () => {
+newGameButton.addEventListener("click", async () => {
   if (isRoundCooldownActive()) return;
-  startGame();
+  await startGame();
 });
 
 guessInput.addEventListener("keydown", event => {
@@ -2580,8 +2677,6 @@ guessInput.addEventListener("keydown", event => {
 });
 
 async function initialize() {
-  startGame();
-
   const { data: { session }, error } = await supabaseClient.auth.getSession();
 
   if (error) {
@@ -2591,6 +2686,7 @@ async function initialize() {
   }
 
   await refreshAccount(session);
+  await startGame();
 }
 
 initialize();
