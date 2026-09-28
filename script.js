@@ -2298,33 +2298,43 @@ async function makeGuess() {
   }
 }
 
-function secureNormalCategoryCell(info, value) {
-  if (!info) return `<div class="cell gray">${value}</div>`;
-  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+function secureNormalCategoryCell(hint, value) {
+  const color = ["green", "yellow", "gray"].includes(hint) ? hint : "gray";
   return `<div class="cell ${color}">${value}</div>`;
 }
 
 function secureNormalStatCell(info, value) {
-  if (!info) return `<div class="cell gray">${value}</div>`;
+  const color = ["green", "yellow", "gray"].includes(info?.color) ? info.color : "gray";
   let arrow = "";
-  if (!info.match && info.direction === "higher") arrow = " ↑";
-  if (!info.match && info.direction === "lower") arrow = " ↓";
-  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+  if (info?.direction === "higher") arrow = " ↑";
+  if (info?.direction === "lower") arrow = " ↓";
   return `<div class="cell ${color}">${value}${arrow}</div>`;
 }
 
-function addSecureNormalGuessRow(guess, result) {
+function addSecureNormalGuessRow(localGuess, result) {
+  const serverGuess = result.guess || {};
+  const hints = result.hints || {};
+  const name = serverGuess.name ?? localGuess.name;
+  const element = serverGuess.element ?? localGuess.element;
+  const game = serverGuess.game ?? localGuess.game;
+  const gimmick = serverGuess.gimmick ?? localGuess.gimmick;
+  const attackForm = serverGuess.attack_form ?? localGuess.attackForm;
+  const color = serverGuess.color ?? localGuess.color;
+  const health = serverGuess.health ?? localGuess.health;
+  const speed = serverGuess.speed ?? localGuess.speed;
+  const armor = serverGuess.armor ?? localGuess.armor;
+
   const row = document.createElement("tr");
   row.innerHTML = `
-    <td><div class="cell ${result.correct ? "green" : "gray"}">${guess.name}</div></td>
-    <td>${secureNormalCategoryCell(result.element, guess.element)}</td>
-    <td>${secureNormalCategoryCell(result.game, guess.game)}</td>
-    <td>${secureNormalCategoryCell(result.gimmick, guess.gimmick)}</td>
-    <td>${secureNormalCategoryCell(result.attack_form, guess.attackForm)}</td>
-    <td>${secureNormalCategoryCell(result.color, guess.color)}</td>
-    <td>${secureNormalStatCell(result.health, guess.health)}</td>
-    <td>${secureNormalStatCell(result.speed, guess.speed)}</td>
-    <td>${secureNormalStatCell(result.armor, guess.armor)}</td>`;
+    <td><div class="cell ${result.correct ? "green" : "gray"}">${name}</div></td>
+    <td>${secureNormalCategoryCell(hints.element, element)}</td>
+    <td>${secureNormalCategoryCell(hints.game, game)}</td>
+    <td>${secureNormalCategoryCell(hints.gimmick, gimmick)}</td>
+    <td>${secureNormalCategoryCell(hints.attack_form, attackForm)}</td>
+    <td>${secureNormalCategoryCell(hints.color, color)}</td>
+    <td>${secureNormalStatCell(hints.health, health)}</td>
+    <td>${secureNormalStatCell(hints.speed, speed)}</td>
+    <td>${secureNormalStatCell(hints.armor, armor)}</td>`;
   document.getElementById("guessTableBody").prepend(row);
 }
 
