@@ -2298,18 +2298,33 @@ async function makeGuess() {
   }
 }
 
+function secureNormalCategoryCell(info, value) {
+  if (!info) return `<div class="cell gray">${value}</div>`;
+  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+  return `<div class="cell ${color}">${value}</div>`;
+}
+
+function secureNormalStatCell(info, value) {
+  if (!info) return `<div class="cell gray">${value}</div>`;
+  let arrow = "";
+  if (!info.match && info.direction === "higher") arrow = " ↑";
+  if (!info.match && info.direction === "lower") arrow = " ↓";
+  const color = info.match ? "green" : (info.close ? "yellow" : "gray");
+  return `<div class="cell ${color}">${value}${arrow}</div>`;
+}
+
 function addSecureNormalGuessRow(guess, result) {
   const row = document.createElement("tr");
   row.innerHTML = `
     <td><div class="cell ${result.correct ? "green" : "gray"}">${guess.name}</div></td>
-    <td>${dailyCategoryCell(result.element)}</td>
-    <td>${dailyCategoryCell(result.game)}</td>
-    <td>${dailyCategoryCell(result.gimmick)}</td>
-    <td>${dailyCategoryCell(result.attack_form)}</td>
-    <td>${dailyCategoryCell(result.color)}</td>
-    <td>${dailyStatCell(result.health)}</td>
-    <td>${dailyStatCell(result.speed)}</td>
-    <td>${dailyStatCell(result.armor)}</td>`;
+    <td>${secureNormalCategoryCell(result.element, guess.element)}</td>
+    <td>${secureNormalCategoryCell(result.game, guess.game)}</td>
+    <td>${secureNormalCategoryCell(result.gimmick, guess.gimmick)}</td>
+    <td>${secureNormalCategoryCell(result.attack_form, guess.attackForm)}</td>
+    <td>${secureNormalCategoryCell(result.color, guess.color)}</td>
+    <td>${secureNormalStatCell(result.health, guess.health)}</td>
+    <td>${secureNormalStatCell(result.speed, guess.speed)}</td>
+    <td>${secureNormalStatCell(result.armor, guess.armor)}</td>`;
   document.getElementById("guessTableBody").prepend(row);
 }
 
