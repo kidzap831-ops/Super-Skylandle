@@ -3044,20 +3044,42 @@ const passiveBuffsList = document.getElementById("passiveBuffsList");
 
 const achievementDefinitions = [
   {id:"first_steps", name:"First Steps", description:"Win 1 normal game", reward:"Title: Newcomer", stat:"normal_wins", goal:1},
-  {id:"getting_good", name:"Getting Good", description:"Win 50 normal games", reward:"+1 point per normal win", stat:"normal_wins", goal:50},
-  {id:"skylander_pro", name:"Skylander Pro", description:"Win 250 normal games", reward:"Another +1 point per normal win", stat:"normal_wins", goal:250},
-  {id:"portal_master", name:"Portal Master", description:"Win 1,500 normal games and reach 100,000 total score", reward:"Title: Portal Master, +5% on all games, +3 per normal win", stat:"normal_wins", goal:1500, scoreGoal:100000},
+  {id:"getting_good", name:"Getting Good", description:"Win 50 normal games", reward:"+1 flat point on normal wins", stat:"normal_wins", goal:50},
+  {id:"skylander_pro", name:"Skylander Pro", description:"Win 250 normal games", reward:"+1 flat point on normal wins", stat:"normal_wins", goal:250},
+  {id:"one_thousand", name:"One Thousand!", description:"Win 1,000 normal games", reward:"+2 flat points on normal wins", stat:"normal_wins", goal:1000},
+  {id:"portal_master", name:"Portal Master", description:"Win 2,500 normal games and reach 150,000 total score", reward:"Title: Portal Master, +10% normal score, +3 flat normal points", stat:"normal_wins", goal:2500, scoreGoal:150000},
   {id:"first_try", name:"First Try!", description:"Win a normal game on your first guess", reward:"Title: Lucky Shot", stat:"first_try_wins", goal:1},
-  {id:"psychic", name:"Psychic", description:"Get 10 first-guess normal wins", reward:"+5 points on first-try wins", stat:"first_try_wins", goal:10},
-  {id:"lottery_ticket", name:"Buy a Lottery Ticket", description:"Get 40 first-guess normal wins", reward:"Title: Mind-Reader, +1% and +2 points on first-try wins", stat:"first_try_wins", goal:40},
-  {id:"elementalist", name:"Elementalist", description:"Win 25 normal games matching your favorite element", reward:"+1% favorite-element bonus", stat:"favorite_element_wins", goal:25},
-  {id:"elemental_loyalist", name:"Elemental Loyalist", description:"Win 100 normal games matching your favorite element", reward:"Another +1% favorite-element bonus", stat:"favorite_element_wins", goal:100},
-  {id:"i_choose_you", name:"I Choose You!", description:"Win with your exact favorite Skylander once", reward:"+1% favorite-Skylander bonus", stat:"favorite_skylander_wins", goal:1},
-  {id:"true_favourite", name:"True Favourite", description:"Win with your exact favorite Skylander 20 times", reward:"+2% favorite-Skylander bonus, Title: Loyalist", stat:"favorite_skylander_wins", goal:20},
-  {id:"daily_apprentice", name:"Daily Apprentice", description:"Complete all 3 Daily puzzles in one day", reward:"+1 point on Daily wins", stat:"daily_full_completion_days", goal:1},
-  {id:"daily_master", name:"Daily Master", description:"Complete all 3 Dailies on 10 different days", reward:"Title: Puzzle Head", stat:"daily_full_completion_days", goal:10},
-  {id:"collection", name:"Collection", description:"Correctly guess 50 different mystery Skylanders", reward:"+1 point on normal wins", stat:"unique_skylanders", goal:50},
-  {id:"gotta_catch_em_all", name:"Gotta Catch 'em All", description:"Correctly guess 150 unique mystery Skylanders", reward:"Title: Collector", stat:"unique_skylanders", goal:150}
+  {id:"psychic", name:"Psychic", description:"Get 10 first-guess normal wins", reward:"+5 flat points on first-try wins", stat:"first_try_wins", goal:10},
+  {id:"lottery_ticket", name:"Buy a Lottery Ticket", description:"Get 40 first-guess normal wins", reward:"Title: Mind-Reader, +1% and +2 flat points on first-try wins", stat:"first_try_wins", goal:40},
+  {id:"one_of_each", name:"One of Each", description:"Get a first-try normal win with a mystery Skylander from each of the 10 elements", reward:"+2% on future normal first-try wins", special:"one_of_each"},
+  {id:"elementalist", name:"Elementalist", description:"Win 25 normal games matching your favorite element", reward:"+1 percentage point favorite-element bonus", stat:"favorite_element_wins", goal:25},
+  {id:"elemental_loyalist", name:"Elemental Loyalist", description:"Win 100 normal games matching your favorite element", reward:"Another +1 percentage point favorite-element bonus", stat:"favorite_element_wins", goal:100},
+  {id:"i_choose_you", name:"I Choose You!", description:"Win with your exact favorite Skylander once", reward:"+1 percentage point favorite-Skylander bonus", stat:"favorite_skylander_wins", goal:1},
+  {id:"true_favourite", name:"True Favourite", description:"Win with your exact favorite Skylander 20 times", reward:"+2 percentage points favorite-Skylander bonus, Title: Loyalist", stat:"favorite_skylander_wins", goal:20},
+  {id:"daily_apprentice", name:"Daily Apprentice", description:"Complete all 3 Daily puzzles in one day", reward:"+1 flat point on successful Daily puzzles", stat:"daily_full_completion_days", goal:1},
+  {id:"daily_pro", name:"Daily Pro", description:"Complete all 3 Dailies on 10 different days", reward:"Title: Puzzle Head", stat:"daily_full_completion_days", goal:10},
+  {id:"daily_master", name:"Daily Master", description:"Complete all 3 Dailies on 25 different days", reward:"+1 flat Daily point and +1% Daily score", stat:"daily_full_completion_days", goal:25},
+  {id:"daily_grandmaster", name:"Daily Grandmaster", description:"Complete all 3 Dailies on 50 different days", reward:"+3 flat Daily points and +2% Daily score", stat:"daily_full_completion_days", goal:50},
+  {id:"collection", name:"Collection", description:"Correctly guess 50 unique mystery Skylanders in Normal", reward:"+1 flat normal point", stat:"unique_skylanders", goal:50},
+  {id:"big_collection", name:"Big Collection", description:"Correctly guess 100 unique mystery Skylanders in Normal", reward:"+2% normal score", stat:"unique_skylanders", goal:100},
+  {id:"gotta_catch_em_all", name:"Gotta Catch 'em All", description:"Correctly guess 150 unique mystery Skylanders in Normal", reward:"Title: Collector, +3% normal score", stat:"unique_skylanders", goal:150},
+  {id:"colorful", name:"Colorful", description:"Win across every element: 15 each for the 8 standard elements and 3 each for Light and Dark", reward:"Title: Rainbow Lover, +1 flat point when the answer is your exact favorite Skylander", special:"colorful"},
+  {id:"sun_and_moon", name:"Sun and Moon", description:"Win 10 Dark and 10 Light normal games", reward:"+0.5 percentage point favorite-element bonus", special:"sun_and_moon"},
+  {id:"watergirl_fireboy", name:"WaterGirl and FireBoy", description:"Win 15 Water and 15 Fire normal games", reward:"Titles: WaterGirl and FireBoy, +0.5 percentage point favorite-element bonus", special:"watergirl_fireboy"},
+  {id:"sharkboy_lavagirl", name:"SharkBoy and LavaGirl", description:"Win 50 Water and 50 Fire normal games", reward:"Titles: SharkBoy and LavaGirl, +1 percentage point favorite-element bonus", special:"sharkboy_lavagirl"},
+  {id:"spyros_adventure", name:"Spyro's Adventure", description:"Win 100 normal games with Spyro's Adventure debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"giants", name:"Giants", description:"Win 100 normal games with Giants debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"swap_force", name:"Swap Force", description:"Win 100 normal games with Swap Force debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"trap_team", name:"Trap Team", description:"Win 100 normal games with Trap Team debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"superchargers", name:"SuperChargers", description:"Win 100 normal games with SuperChargers debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"imaginators", name:"Imaginators", description:"Win 100 normal games with Imaginators debut Skylanders", reward:"+0.5% normal score", special:"game_wins"},
+  {id:"diversity", name:"Diversity", description:"Win 200 Spyro's Adventure, 150 Giants, 100 Swap Force, 75 Trap Team, 40 SuperChargers and 20 Imaginators normal games", reward:"Title: Master of the Ages, +2 flat normal points", special:"diversity"},
+  {id:"the_best", name:"The Best", description:"Correctly guess Tree Rex, Spyro, Wash Buckler, Gill Grunt and Drobot at least once", reward:"Title: G.O.A.T, +2 percentage points favorite-Skylander bonus", special:"the_best"},
+  {id:"mystical", name:"Mystical", description:"Win 20 Magic normal games", reward:"Title: Magician, +0.5% normal score", special:"mystical"},
+  {id:"random_number", name:"Random Number", description:"Reach 6,767 total score", reward:"Title: Geeked", special:"score", scoreGoal:6767},
+  {id:"last_airbender", name:"The Last Airbender", description:"Win 50 Air normal games", reward:"Title: Avatar, +0.5 percentage point favorite-element bonus", special:"last_airbender"},
+  {id:"golddigger", name:"Golddigger", description:"Correctly guess Trigger Happy at least twice and win 25 Earth normal games", reward:"Title: Golddigger, +0.5 percentage point favorite-element bonus", special:"golddigger"},
+  {id:"the_og", name:"The O.G.", description:"Get 25 normal wins where Spyro was your first guess, plus complete 1 Daily where Spyro was your first guess", reward:"+0.5% normal score", special:"the_og"}
 ];
 
 async function loadAchievements() {
@@ -3085,19 +3107,23 @@ async function loadAchievements() {
   const buffs = info.buffs || {};
   const activeBuffs = [];
   const normalFlat = Number(buffs.normal_flat_bonus || 0);
-  const allPercent = Number(buffs.all_score_percent || 0);
+  const normalPercent = Number(buffs.normal_score_percent || 0);
   const firstTryFlat = Number(buffs.first_try_flat_bonus || 0);
   const firstTryPercent = Number(buffs.first_try_percent || 0);
   const favoriteElementPercent = Number(buffs.favorite_element_percent || 0);
   const favoriteSkylanderPercent = Number(buffs.favorite_skylander_percent || 0);
+  const favoriteSkylanderFlat = Number(buffs.favorite_skylander_flat_bonus || 0);
   const dailyFlat = Number(buffs.daily_flat_bonus || 0);
+  const dailyPercent = Number(buffs.daily_percent || 0);
   if (normalFlat > 0) activeBuffs.push(`+${normalFlat} point${normalFlat === 1 ? "" : "s"} per normal win`);
-  if (allPercent > 0) activeBuffs.push(`+${allPercent}% score on all games`);
+  if (normalPercent > 0) activeBuffs.push(`+${normalPercent}% score on normal games`);
   if (firstTryFlat > 0) activeBuffs.push(`+${firstTryFlat} points on first-try wins`);
   if (firstTryPercent > 0) activeBuffs.push(`+${firstTryPercent}% score on first-try wins`);
   if (favoriteElementPercent > 0) activeBuffs.push(`+${favoriteElementPercent}% favorite-element bonus`);
   if (favoriteSkylanderPercent > 0) activeBuffs.push(`+${favoriteSkylanderPercent}% favorite-Skylander bonus`);
-  if (dailyFlat > 0) activeBuffs.push(`+${dailyFlat} point${dailyFlat === 1 ? "" : "s"} on Daily wins`);
+  if (favoriteSkylanderFlat > 0) activeBuffs.push(`+${favoriteSkylanderFlat} flat point${favoriteSkylanderFlat === 1 ? "" : "s"} when the answer is your exact favorite Skylander`);
+  if (dailyFlat > 0) activeBuffs.push(`+${dailyFlat} point${dailyFlat === 1 ? "" : "s"} on successful Daily puzzles`);
+  if (dailyPercent > 0) activeBuffs.push(`+${dailyPercent}% score on successful Daily puzzles`);
   passiveBuffsList.innerHTML = activeBuffs.length
     ? activeBuffs.map(buff => `<div class="passive-buff-item"><span class="passive-buff-icon">⚡</span><span>${buff}</span></div>`).join("")
     : '<p class="muted passive-buffs-empty">No passive buffs unlocked yet.</p>';
@@ -3105,12 +3131,19 @@ async function loadAchievements() {
   achievementSummary.textContent = `${unlocked.size} / ${achievementDefinitions.length} achievements unlocked`;
   achievementList.innerHTML = "";
   achievementDefinitions.forEach(a => {
-    const value = Number(stats[a.stat] || 0);
-    const mainProgress = Math.min(value / a.goal, 1);
-    const scoreProgress = a.scoreGoal ? Math.min(scoreNow / a.scoreGoal, 1) : 1;
-    const progress = Math.min(mainProgress, scoreProgress);
-    let progressText = `${Math.min(value,a.goal).toLocaleString()} / ${a.goal.toLocaleString()}`;
-    if (a.scoreGoal) progressText += ` wins • ${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
+    let progress = unlocked.has(a.id) ? 1 : 0;
+    let progressText = unlocked.has(a.id) ? "Completed" : "In progress";
+    if (a.stat && a.goal) {
+      const value = Number(stats[a.stat] || 0);
+      const mainProgress = Math.min(value / a.goal, 1);
+      const scoreProgress = a.scoreGoal ? Math.min(scoreNow / a.scoreGoal, 1) : 1;
+      progress = Math.min(mainProgress, scoreProgress);
+      progressText = `${Math.min(value,a.goal).toLocaleString()} / ${a.goal.toLocaleString()}`;
+      if (a.scoreGoal) progressText += ` wins • ${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
+    } else if (a.special === "score") {
+      progress = Math.min(scoreNow / a.scoreGoal, 1);
+      progressText = `${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
+    }
     const card = document.createElement("div");
     card.className = `achievement-card${unlocked.has(a.id) ? " unlocked" : ""}`;
     card.innerHTML = `<div class="achievement-top"><span class="achievement-name">${a.name}</span><span class="achievement-lock">${unlocked.has(a.id) ? "✅ Unlocked" : "🔒 Locked"}</span></div><div class="achievement-description">${a.description}</div><div class="achievement-reward"><strong>Reward:</strong> ${a.reward}</div><div class="achievement-progress">${progressText}</div><div class="achievement-progress-bar"><div class="achievement-progress-fill" style="width:${Math.round(progress*100)}%"></div></div>`;
