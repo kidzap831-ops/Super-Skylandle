@@ -3095,9 +3095,10 @@ async function loadAchievements() {
     return;
   }
   achievementList.innerHTML = '<p class="muted">Loading achievements...</p>';
-  const [{data: info, error}, {data: profile}] = await Promise.all([
+  const [{data: info, error}, {data: profile}, {data: skylanderProgress, error: skylanderProgressError}] = await Promise.all([
     supabaseClient.rpc("check_achievements", {p_user_id: currentUser.id}),
-    supabaseClient.from("profiles").select("equipped_title,total_score").eq("id", currentUser.id).single()
+    supabaseClient.from("profiles").select("equipped_title,total_score").eq("id", currentUser.id).single(),
+    supabaseClient.rpc("get_achievement_skylander_progress")
   ]);
   if (error) {
     console.error("Could not load achievements:", error);
@@ -3133,21 +3134,59 @@ async function loadAchievements() {
   const scoreNow = Number(profile?.total_score || totalScore || 0);
   achievementSummary.textContent = `${unlocked.size} / ${achievementDefinitions.length} achievements unlocked`;
   achievementList.innerHTML = "";
+  const elements = info.elements || {};
+  const firstTryElements = info.first_try_elements || {};
+  const games = info.games || {};
+  if (skylanderProgressError) console.error("Could not load specific Skylander achievement progress:", skylanderProgressError);
+  const skylanderWins = skylanderProgress || {};
+
+  const clampPart = (value, goal, label) => ({
+    value: Number(value || 0),
+    goal: Number(goal),
+    label,
+    ratio: Math.min(Number(value || 0) / Number(goal), 1)
+  });
+
+  function achievementConditions(a) {
+    if (a.id === "portal_master") return [
+      clampPart(stats.normal_wins, 2500, "wins"),
+      clampPart(scoreNow, 150000, "score")
+    ];
+    if (a.id === "one_of_each") return ["Fire","Water","Life","Undead","Magic","Tech","Earth","Air","Light","Dark"].map(e => clampPart(firstTryElements[e], 1, e));
+    if (a.id === "colorful") return ["Fire","Water","Life","Undead","Magic","Tech","Earth","Air"].map(e => clampPart(elements[e], 15, e)).concat([clampPart(elements.Light,3,"Light"),clampPart(elements.Dark,3,"Dark")]);
+    if (a.id === "sun_and_moon") return [clampPart(elements.Dark,10,"Dark"), clampPart(elements.Light,10,"Light")];
+    if (a.id === "watergirl_fireboy") return [clampPart(elements.Water,15,"Water"), clampPart(elements.Fire,15,"Fire")];
+    if (a.id === "sharkboy_lavagirl") return [clampPart(elements.Water,50,"Water"), clampPart(elements.Fire,50,"Fire")];
+    const gameGoals = {
+      spyros_adventure:["Spyro's Adventure",100], giants:["Giants",100], swap_force:["Swap Force",100],
+      trap_team:["Trap Team",100], superchargers:["SuperChargers",100], imaginators:["Imaginators",100]
+    };
+    if (gameGoals[a.id]) { const [g,goal]=gameGoals[a.id]; return [clampPart(games[g],goal,"wins")]; }
+    if (a.id === "diversity") return [
+      clampPart(games["Spyro's Adventure"],200,"Spyro's Adventure"), clampPart(games.Giants,150,"Giants"),
+      clampPart(games["Swap Force"],100,"Swap Force"), clampPart(games["Trap Team"],75,"Trap Team"),
+      clampPart(games.SuperChargers,40,"SuperChargers"), clampPart(games.Imaginators,20,"Imaginators")
+    ];
+    if (a.id === "the_best") return ["Tree Rex","Spyro","Wash Buckler","Gill Grunt","Drobot"].map(n => clampPart(skylanderWins[n],1,n));
+    if (a.id === "mystical") return [clampPart(elements.Magic,20,"Magic wins")];
+    if (a.id === "random_number") return [clampPart(scoreNow,6767,"score")];
+    if (a.id === "last_airbender") return [clampPart(elements.Air,50,"Air wins")];
+    if (a.id === "golddigger") return [clampPart(skylanderWins["Trigger Happy"],2,"Trigger Happy"), clampPart(elements.Earth,25,"Earth wins")];
+    if (a.id === "the_og") return [clampPart(stats.spyro_first_normal_wins,25,"Spyro-first normal wins"), clampPart(stats.spyro_first_daily_completions,1,"Spyro-first Daily")];
+    if (a.stat && a.goal) return [clampPart(stats[a.stat], a.goal, a.stat === "daily_full_completion_days" ? "days" : a.stat === "unique_skylanders" ? "unique Skylanders" : a.stat === "first_try_wins" ? "first-try wins" : a.stat === "favorite_element_wins" ? "favorite-element wins" : a.stat === "favorite_skylander_wins" ? "favorite-Skylander wins" : "wins")];
+    return [];
+  }
+
   const achievementRows = achievementDefinitions.map((a, originalIndex) => {
-    let progress = unlocked.has(a.id) ? 1 : 0;
-    let progressText = unlocked.has(a.id) ? "Completed" : "In progress";
-    if (a.stat && a.goal) {
-      const value = Number(stats[a.stat] || 0);
-      const mainProgress = Math.min(value / a.goal, 1);
-      const scoreProgress = a.scoreGoal ? Math.min(scoreNow / a.scoreGoal, 1) : 1;
-      progress = Math.min(mainProgress, scoreProgress);
-      progressText = `${Math.min(value,a.goal).toLocaleString()} / ${a.goal.toLocaleString()}`;
-      if (a.scoreGoal) progressText += ` wins • ${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
-    } else if (a.special === "score") {
-      progress = Math.min(scoreNow / a.scoreGoal, 1);
-      progressText = `${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
+    const conditions = achievementConditions(a);
+    let progress = unlocked.has(a.id) ? 1 : (conditions.length ? conditions.reduce((sum,c) => sum + c.ratio, 0) / conditions.length : 0);
+    progress = Math.min(Math.max(progress, 0), 1);
+    const percent = Math.round(progress * 100);
+    let progressText = unlocked.has(a.id) ? "Completed" : `${percent}% complete`;
+    if (!unlocked.has(a.id) && conditions.length > 0 && conditions.length <= 3) {
+      progressText = conditions.map(c => `${Math.min(c.value,c.goal).toLocaleString()} / ${c.goal.toLocaleString()} ${c.label}`).join(" • ");
     }
-    const requirement = Number(a.goal || a.scoreGoal || 0);
+    const requirement = conditions.reduce((sum,c) => sum + c.goal, 0);
     return {a, progress, progressText, requirement, originalIndex};
   });
 
