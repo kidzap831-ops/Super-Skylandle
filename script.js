@@ -3038,6 +3038,9 @@ const achievementsOverlay = document.getElementById("achievementsOverlay");
 const closeAchievementsButton = document.getElementById("closeAchievementsButton");
 const achievementList = document.getElementById("achievementList");
 const achievementSummary = document.getElementById("achievementSummary");
+const achievementSort = document.getElementById("achievementSort");
+let lastAchievementRenderData = null;
+if (achievementSort) achievementSort.value = localStorage.getItem("skylandleAchievementSort") || "closest";
 const titleSelect = document.getElementById("titleSelect");
 const titleStatus = document.getElementById("titleStatus");
 const passiveBuffsList = document.getElementById("passiveBuffsList");
@@ -3130,7 +3133,7 @@ async function loadAchievements() {
   const scoreNow = Number(profile?.total_score || totalScore || 0);
   achievementSummary.textContent = `${unlocked.size} / ${achievementDefinitions.length} achievements unlocked`;
   achievementList.innerHTML = "";
-  achievementDefinitions.forEach(a => {
+  const achievementRows = achievementDefinitions.map((a, originalIndex) => {
     let progress = unlocked.has(a.id) ? 1 : 0;
     let progressText = unlocked.has(a.id) ? "Completed" : "In progress";
     if (a.stat && a.goal) {
@@ -3144,6 +3147,22 @@ async function loadAchievements() {
       progress = Math.min(scoreNow / a.scoreGoal, 1);
       progressText = `${Math.min(scoreNow,a.scoreGoal).toLocaleString()} / ${a.scoreGoal.toLocaleString()} score`;
     }
+    const requirement = Number(a.goal || a.scoreGoal || 0);
+    return {a, progress, progressText, requirement, originalIndex};
+  });
+
+  const sortMode = achievementSort?.value || "closest";
+  achievementRows.sort((x, y) => {
+    if (sortMode === "closest") return y.progress - x.progress || x.originalIndex - y.originalIndex;
+    if (sortMode === "furthest") return x.progress - y.progress || x.originalIndex - y.originalIndex;
+    if (sortMode === "az") return x.a.name.localeCompare(y.a.name);
+    if (sortMode === "za") return y.a.name.localeCompare(x.a.name);
+    if (sortMode === "highest") return y.requirement - x.requirement || x.originalIndex - y.originalIndex;
+    if (sortMode === "lowest") return x.requirement - y.requirement || x.originalIndex - y.originalIndex;
+    return x.originalIndex - y.originalIndex;
+  });
+
+  achievementRows.forEach(({a, progress, progressText}) => {
     const card = document.createElement("div");
     card.className = `achievement-card${unlocked.has(a.id) ? " unlocked" : ""}`;
     card.innerHTML = `<div class="achievement-top"><span class="achievement-name">${a.name}</span><span class="achievement-lock">${unlocked.has(a.id) ? "✅ Unlocked" : "🔒 Locked"}</span></div><div class="achievement-description">${a.description}</div><div class="achievement-reward"><strong>Reward:</strong> ${a.reward}</div><div class="achievement-progress">${progressText}</div><div class="achievement-progress-bar"><div class="achievement-progress-fill" style="width:${Math.round(progress*100)}%"></div></div>`;
@@ -3166,6 +3185,11 @@ async function equipSelectedTitle() {
   titleStatus.textContent = titleSelect.value ? `Equipped: ${titleSelect.value}` : "Title removed.";
   await loadProfile();
 }
+
+achievementSort?.addEventListener("change", async () => {
+  localStorage.setItem("skylandleAchievementSort", achievementSort.value);
+  await loadAchievements();
+});
 
 achievementsToggleButton.addEventListener("click", async () => {
   achievementsOverlay.classList.remove("hidden");
